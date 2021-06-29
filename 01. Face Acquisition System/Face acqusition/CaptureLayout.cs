@@ -44,12 +44,12 @@ namespace Face_acqusition
             timer.Enabled = true;
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        private void timer_Tick(object sender, EventArgs e)
         {
             Mat frame = new Mat();
             vc.Read(frame);
 
-            if(frame.Empty()) { return; }
+            if (frame.Empty()) { return; }
             else
             {
                 try
@@ -66,13 +66,19 @@ namespace Face_acqusition
 
         private void capture_btn_Click(object sender, EventArgs e)
         {
-            string cur_filename = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+            string cur_filename = DateTime.Now.ToString("yyyyMMdd-HHmmss");
             try
             {
                 pictureBox1.Image.Save(path + name + @"\" + cur_filename + ".png", System.Drawing.Imaging.ImageFormat.Png);
                 MessageBox.Show("save !");
             }
             catch { }
+        }
+
+        private void saved_photo_btn_Click(object sender, EventArgs e)
+        {
+            string folder_path = path + name;
+            System.Diagnostics.Process.Start(folder_path);
         }
 
         private void CaptureLayout_FormClosing(object sender, FormClosingEventArgs e)
