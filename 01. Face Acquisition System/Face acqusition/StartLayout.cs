@@ -27,7 +27,8 @@ namespace Face_acqusition
         private void sign_up_btn_Click(object sender, EventArgs e)
         {
             Sign_up sign_up = new Sign_up();
-            sign_up.Show();
+            if (sign_up.IsEmpty().Equals("true")) { sign_up.Show(); }
+            else { MessageBox.Show("No registered members."); }
         }
     }
 }

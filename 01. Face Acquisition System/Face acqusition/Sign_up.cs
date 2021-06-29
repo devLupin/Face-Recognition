@@ -25,14 +25,17 @@ namespace Face_acqusition
         {
             InitializeComponent();
             this.CenterToScreen();
+        }
 
+        public string IsEmpty()
+        {
             Database_Setting();
-            string db_state = Select_Member();
+            return Select_Member();
+        }
 
-            if (!db_state.Equals("true"))
-            {
-                MessageBox.Show(db_state);
-            }
+        private void Sign_up_Load(object sender, EventArgs e)
+        {
+
         }
 
         private void Database_Setting()
@@ -67,19 +70,19 @@ namespace Face_acqusition
                         string cur_name = Convert.ToString(rdr["NAME"].ToString());
                         member_list.Items.Add(cur_name);
                     }
+
+                    conn.Close();
+                    return "true";
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                     Console.WriteLine(ex.StackTrace);
 
+                    conn.Close();
                     return "SELECT error";
                 }
-
-                conn.Close();
             }
-
-            return "true";
         }
 
         private void run_btn_Click(object sender, EventArgs e)
