@@ -34,6 +34,15 @@ namespace Face_acqusition
             name_txt.Text = string.Empty;
         }
 
+        bool IsEnglish(char ch)
+        {
+            if ((0x61 <= ch && ch <= 0x7A) || (0x41 <= ch && ch <= 0x5A))
+                return true;
+
+            else
+                return false;
+        }
+
         private void Database_Setting()
         {
             dbServer = "localhost";
@@ -72,6 +81,13 @@ namespace Face_acqusition
                     Console.WriteLine(ex.StackTrace);
                 }
 
+                for(int i=0; i<name.Length; i++)
+                {
+                    if (!IsEnglish(name[i]))
+                    {
+                        return "Incorrect string value. Only English.";
+                    }
+                }
 
                 try
                 {
