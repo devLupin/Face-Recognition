@@ -35,7 +35,8 @@ namespace Face_acqusition
 
         private void Sign_up_Load(object sender, EventArgs e)
         {
-
+            this.member_list.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            this.member_list.AutoCompleteSource = AutoCompleteSource.ListItems;
         }
 
         private void Database_Setting()
