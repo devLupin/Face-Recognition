@@ -64,12 +64,14 @@ namespace Face_acqusition
                     conn.Open();
                 }
 
-                try
+                
+                try     // CREATE TABLE
                 {
                     string sql =
                         "CREATE TABLE IF NOT EXISTS MEMBER(" +
                         "NAME VARCHAR(30) NOT NULL," +
-                        "PRIMARY KEY(NAME))";
+                        "CODE INT NOT NULL," +
+                        "PRIMARY KEY(CODE))";
 
                     MySqlCommand cmd = new MySqlCommand(sql, conn);
                     cmd.ExecuteNonQuery();
@@ -81,7 +83,22 @@ namespace Face_acqusition
                     Console.WriteLine(ex.StackTrace);
                 }
 
-                for(int i=0; i<name.Length; i++)
+                try     // ADD DUMMY
+                {
+                    string sql =
+                        "INSERT IGNORE INTO MEMBER VALUES('DUMMY', 1)";
+
+                    MySqlCommand cmd = new MySqlCommand(sql, conn);
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("INSERT DUMMY error!");
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                }
+
+                for (int i=0; i<name.Length; i++)
                 {
                     if (!IsEnglish(name[i]))
                     {
@@ -89,9 +106,29 @@ namespace Face_acqusition
                     }
                 }
 
+                int code = -1;
                 try
                 {
-                    string sql = "INSERT INTO MEMBER VALUES(" + "'" + name + "'" + ")";
+                    string sql = "SELECT CODE FROM MEMBER";
+                    MySqlCommand cmd = new MySqlCommand(sql, conn);
+                    MySqlDataReader rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+                        code = Convert.ToInt32(rdr["CODE"].ToString());
+                    }
+                    rdr.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                    return "SELECT code error";
+                }
+
+                try
+                {
+                    string sql = "INSERT INTO MEMBER VALUES(" + "'" + name + "'," + (code + 1) + ")";
                     MySqlCommand cmd = new MySqlCommand(sql, conn);
                     cmd.ExecuteNonQuery();
                 }
