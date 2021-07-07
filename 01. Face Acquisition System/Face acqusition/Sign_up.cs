@@ -95,8 +95,13 @@ namespace Face_acqusition
 
             else
             {
-                CaptureLayout capture = new CaptureLayout(member_list.Text);
-                capture.Show();
+                string cur_msg = "Is the selected " + "'" + member_list.Text + "'" + " correct?";
+                if (MessageBox.Show(cur_msg, "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    CaptureLayout capture = new CaptureLayout(member_list.Text);
+                    capture.Show();
+                }
+                else { }
             }
         }
     }
