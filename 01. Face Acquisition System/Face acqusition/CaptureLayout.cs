@@ -12,7 +12,7 @@ namespace Face_acqusition
     {
         VideoCapture vc;
         VideoWriter vw = new VideoWriter();
-        
+
         private string name;
         const string path = @"C:\sclab\";
 
@@ -57,28 +57,46 @@ namespace Face_acqusition
                     this.Invoke((Action)(() =>
                     {
                         vw.Write(frame);
-                        pictureBox1.Image = BitmapConverter.ToBitmap(frame);
+                        live_box.Image = BitmapConverter.ToBitmap(frame);
                     }), null);
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("timer_Tick() error");
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.StackTrace);
+                }
             }
         }
 
         private void capture_btn_Click(object sender, EventArgs e)
         {
-            string cur_filename = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+            string cur_name = DateTime.Now.ToString("yyyyMMdd-HHmmss");
+            string cur_file = path + name + @"\" + cur_name + ".png";
             try
             {
-                pictureBox1.Image.Save(path + name + @"\" + cur_filename + ".png", System.Drawing.Imaging.ImageFormat.Png);
-                MessageBox.Show("save !");
+                live_box.Image.Save(cur_file, System.Drawing.Imaging.ImageFormat.Png);
             }
-            catch { }
-        }
+            catch (Exception ex)
+            {
+                MessageBox.Show("caputure_btn_Click() error");
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
 
-        private void saved_photo_btn_Click(object sender, EventArgs e)
-        {
-            string folder_path = path + name;
-            System.Diagnostics.Process.Start(folder_path);
+            string cur_msg = "Do you want to save temporary photos?\n Save when you click 'Yes',\n Don't save when you click 'No'.";
+            if (MessageBox.Show(cur_msg, "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                MessageBox.Show("Save !");
+            }
+            else
+            {
+                if (File.Exists(cur_file))
+                {
+                    File.Delete(cur_file);
+                }
+                MessageBox.Show("Delete !");
+            }
         }
 
         private void CaptureLayout_FormClosing(object sender, FormClosingEventArgs e)
