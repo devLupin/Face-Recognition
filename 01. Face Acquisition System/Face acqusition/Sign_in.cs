@@ -31,12 +31,14 @@ namespace Face_acqusition
                 "Data is stored and archived on the server." + "\n\n" +
                 "Collected faces are used for research purposes." + "\n\n";
 
-            name_txt.Text = string.Empty;
+            first_name_txt.Text = string.Empty;
+            last_name_txt.Text = string.Empty;
         }
 
         bool IsEnglish(char ch)
         {
-            if ((0x61 <= ch && ch <= 0x7A) || (0x41 <= ch && ch <= 0x5A))
+            if ((0x61 <= ch && ch <= 0x7A) || (0x41 <= ch && ch <= 0x5A)
+                || (ch == '_'))     // Exception '_'
                 return true;
 
             else
@@ -154,7 +156,8 @@ namespace Face_acqusition
             }
             else
             {
-                if (name_txt.Text.ToString().Any(x => Char.IsWhiteSpace(x) == true) || String.IsNullOrEmpty(name_txt.Text))
+                if ((first_name_txt.Text.ToString().Any(x => Char.IsWhiteSpace(x) == true) || String.IsNullOrEmpty(first_name_txt.Text)) &&
+                    (last_name_txt.Text.ToString().Any(x => Char.IsWhiteSpace(x) == true) || String.IsNullOrEmpty(last_name_txt.Text)))
                 {
                     MessageBox.Show("The name cannot contain spaces or be empty.");
                 }
@@ -162,7 +165,8 @@ namespace Face_acqusition
                 {
                     Database_Setting();
 
-                    string db_state = Insert_Member(name_txt.Text);
+                    string name = first_name_txt.Text + "_" + last_name_txt.Text;
+                    string db_state = Insert_Member(name);
 
                     if (db_state.Equals("true"))
                     {

@@ -69,6 +69,7 @@ namespace Face_acqusition
                     while (rdr.Read())
                     {
                         string cur_name = Convert.ToString(rdr["NAME"].ToString());
+                        cur_name = cur_name.Replace("_", " ");
                         member_list.Items.Add(cur_name);
                     }
 
@@ -98,7 +99,8 @@ namespace Face_acqusition
                 string cur_msg = "Is the selected " + "'" + member_list.Text + "'" + " correct?";
                 if (MessageBox.Show(cur_msg, "", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    CaptureLayout capture = new CaptureLayout(member_list.Text);
+                    string folder_name = member_list.Text.Replace(" ", "_");
+                    CaptureLayout capture = new CaptureLayout(folder_name);
                     capture.Show();
                 }
                 else { }
