@@ -10,11 +10,11 @@ namespace Face_acqusition
 {
     public partial class CaptureLayout : Form
     {
-        VideoCapture vc;
-        VideoWriter vw = new VideoWriter();
+        private VideoCapture vc;
+        private VideoWriter vw = new VideoWriter();
 
         private string name;
-        const string path = @"C:\sclab\";
+        private const string path = @"C:\sclab\";
 
         public CaptureLayout(string name)
         {
@@ -57,7 +57,7 @@ namespace Face_acqusition
                     this.Invoke((Action)(() =>
                     {
                         vw.Write(frame);
-                        live_box.Image = BitmapConverter.ToBitmap(frame);
+                        live_box.Image = DrawRect(BitmapConverter.ToBitmap(frame));
                     }), null);
                 }
                 catch (Exception ex)
@@ -67,6 +67,33 @@ namespace Face_acqusition
                     Console.WriteLine(ex.StackTrace);
                 }
             }
+        }
+
+        private Image DrawRect(Image img)
+        {
+            const int sx = 125, sy = 10, ex = 600, ey = 450;
+            const int sx2 = 150, sy2 = 50, ex2 = 550, ey2 = 430;
+
+            try
+            {
+                Rectangle raBig = new Rectangle(sx, sy, ex - sx, ey - sy);
+                Rectangle raSmall = new Rectangle(sx2, sy2, ex2 - sx2, ey2 - sy2);
+
+                using (Graphics grp = Graphics.FromImage(img))
+                {
+                    Brush bigBrush = new SolidBrush(Color.FromArgb(16, 0, 0, 255));
+                    grp.FillRectangle(bigBrush, raBig);
+
+                    Pen pSmall = new Pen(Color.FromArgb(128, 0, 255, 0), 4);
+                    pSmall.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+                    grp.DrawRectangle(pSmall, raSmall);
+                }
+
+                return img;
+            }
+            catch (Exception) { }
+
+            return img;
         }
 
         private void capture_btn_Click(object sender, EventArgs e)
