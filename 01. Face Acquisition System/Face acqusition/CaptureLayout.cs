@@ -5,6 +5,7 @@ using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System.Threading;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Face_acqusition
 {
@@ -96,20 +97,36 @@ namespace Face_acqusition
             return img;
         }
 
+        public Bitmap LoadBitmap(string path)
+        {
+            if (File.Exists(path))
+            {
+                // open file in read only mode
+                using (FileStream stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+                // get a binary reader for the file stream
+                using (BinaryReader reader = new BinaryReader(stream))
+                {
+                    // copy the content of the file into a memory stream
+                    var memoryStream = new MemoryStream(reader.ReadBytes((int)stream.Length));
+                    // make a new Bitmap object the owner of the MemoryStream
+                    return new Bitmap(memoryStream);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Error Loading File.", "Error!", MessageBoxButtons.OK);
+                return null;
+            }
+        }
+
         private void capture_btn_Click(object sender, EventArgs e)
         {
             string cur_name = DateTime.Now.ToString("yyyyMMdd-HHmmss");
             string cur_file = path + name + @"\" + cur_name + ".png";
-            try
-            {
-                live_box.Image.Save(cur_file, System.Drawing.Imaging.ImageFormat.Png);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("caputure_btn_Click() error");
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-            }
+
+            live_box.Image.Save(cur_file, ImageFormat.Png);
+
+            temp_box.Image = LoadBitmap(cur_file);
 
             string cur_msg = "Do you want to save temporary photos?\n Save when you click 'Yes',\n Don't save when you click 'No'.";
             if (MessageBox.Show(cur_msg, "", MessageBoxButtons.YesNo) == DialogResult.Yes)

@@ -26,11 +26,6 @@ namespace Face_acqusition
             InitializeComponent();
             this.CenterToScreen();
 
-            contents.Text =
-                "Let's start acquiring faces." + "\n\n" +
-                "Data is stored and archived on the server." + "\n\n" +
-                "Collected faces are used for research purposes." + "\n\n";
-
             first_name_txt.Text = string.Empty;
             last_name_txt.Text = string.Empty;
         }

@@ -35,6 +35,7 @@ namespace Face_acqusition
 
         private void Sign_up_Load(object sender, EventArgs e)
         {
+            // autocomplete
             this.member_list.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
             this.member_list.AutoCompleteSource = AutoCompleteSource.ListItems;
         }
@@ -69,6 +70,9 @@ namespace Face_acqusition
                     while (rdr.Read())
                     {
                         string cur_name = Convert.ToString(rdr["NAME"].ToString());
+
+                        if (cur_name.Equals("DUMMY")) { continue; }
+
                         cur_name = cur_name.Replace("_", " ");
                         member_list.Items.Add(cur_name);
                     }
@@ -89,22 +93,22 @@ namespace Face_acqusition
 
         private void run_btn_Click(object sender, EventArgs e)
         {
-            if (member_list.Text.ToString().Any(x => Char.IsWhiteSpace(x) == true) || String.IsNullOrEmpty(member_list.Text))
+            string cur_msg = "Is the selected " + "'" + member_list.Text + "'" + " correct?";
+            if (MessageBox.Show(cur_msg, "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                MessageBox.Show("Please choose the correct name.");
-            }
+                string folder_name = member_list.Text.Replace(" ", "_");
 
-            else
-            {
-                string cur_msg = "Is the selected " + "'" + member_list.Text + "'" + " correct?";
-                if (MessageBox.Show(cur_msg, "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (folder_name.Any(x => Char.IsWhiteSpace(x) == true) || String.IsNullOrEmpty(folder_name))
                 {
-                    string folder_name = member_list.Text.Replace(" ", "_");
+                    MessageBox.Show("Please choose the correct name.");
+                }
+                else
+                {
                     CaptureLayout capture = new CaptureLayout(folder_name);
                     capture.Show();
                 }
-                else { }
             }
+            else { }
         }
     }
 }
