@@ -32,4 +32,28 @@
         app:layout_constraintStart_toStartOf="@+id/id_txt"
         app:layout_constraintTop_toBottomOf="@+id/id_txt" />
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/border"
+        android:text="Start acquiring face data. \n\nData is stored on the server. \n\nThe Collected data is used for research purposes."
+        android:textSize="12dp"
+        app:layout_constraintEnd_toEndOf="@+id/terms_conditions"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="@+id/terms_conditions"
+        app:layout_constraintTop_toBottomOf="@+id/terms_conditions" />
+
+    <CheckBox
+        android:id="@+id/terms_conditions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:text="Terms and Conditions"
+        app:layout_constraintEnd_toEndOf="@+id/sign_up_btn"
+        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintStart_toStartOf="@+id/sign_up_btn"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_btn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
