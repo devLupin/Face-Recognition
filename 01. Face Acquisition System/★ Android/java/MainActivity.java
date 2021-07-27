@@ -1,4 +1,4 @@
-package com.example.cam;
+package com.example.aquisition;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,13 +9,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity {
 
     private Button sign_in_btn;
     private Button sign_up_btn;
 
     private TextView id_txt;
-
+    public static String _id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 id_txt = findViewById(R.id.id_txt);
-                Toast.makeText(getApplicationContext(), "Login", Toast.LENGTH_SHORT).show();
+                String userID = id_txt.getText().toString();
+
+                if(idCheck(userID)) {
+                    _id = userID;
+
+                    Toast.makeText(getApplicationContext(), "'" + userID + "'" + " Login", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, SigninActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Please check your ID", Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
         });
 
@@ -38,8 +53,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, SignupActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
+    }
+
+    private boolean idCheck(String id) {
+        File dir = new File(getCacheDir(), id);     // Internal storage path
+
+        if(dir.exists()) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
