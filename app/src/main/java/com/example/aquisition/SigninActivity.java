@@ -256,10 +256,15 @@ public class SigninActivity extends AppCompatActivity {
         }
     }
 
+    private View greenFrame;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
+
+        greenFrame = (View) findViewById(R.id.green_frame);
+        greenFrame.bringToFront();
 
         mTextureView = (AutoFitTextureView) findViewById(R.id.texture);
         mButtonVideo = (Button) findViewById(R.id.video);
