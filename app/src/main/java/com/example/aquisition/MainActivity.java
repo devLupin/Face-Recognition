@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
     private Button sign_up_btn;
 
     private TextView id_txt;
-    public static String _id;
 
     private long backKeyPressedTime = 0;
     private Toast toast;
@@ -44,17 +43,16 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(idCheck(userID)) {
-                    _id = userID;
-
-                    Toast.makeText(getApplicationContext(), "'" + userID + "'" + " Login", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(MainActivity.this, SigninActivity.class);
-                    startActivity(intent);
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "Please check your ID", Toast.LENGTH_SHORT).show();
+                if(!idCheck(userID)) {
+                    Toast.makeText(getApplicationContext(), "ID does not exist.", Toast.LENGTH_SHORT).show();
                     return;
+
                 }
+
+                Toast.makeText(getApplicationContext(), "'" + userID + "'" + " Login", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, SigninActivity.class);
+                intent.putExtra("userID", userID);
+                startActivity(intent);
             }
         });
 
@@ -71,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (System.currentTimeMillis() > backKeyPressedTime + 2500) {
             backKeyPressedTime = System.currentTimeMillis();
-            toast = Toast.makeText(this, "Click the Back button once more to exit.", Toast.LENGTH_LONG);
+            toast = Toast.makeText(this, "Press once more to exit.", Toast.LENGTH_LONG);
             toast.show();
             return;
         }
@@ -79,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         if (System.currentTimeMillis() <= backKeyPressedTime + 2500) {
             finish();
             toast.cancel();
-            toast = Toast.makeText(this,"Thank you",Toast.LENGTH_LONG);
+            toast = Toast.makeText(this,"Thank you",Toast.LENGTH_SHORT);
             toast.show();
         }
     }

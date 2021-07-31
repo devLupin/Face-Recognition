@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
@@ -43,12 +44,15 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -257,11 +261,27 @@ public class SigninActivity extends AppCompatActivity {
     }
 
     private View greenFrame;
+    private TextToSpeech tts;
+    private String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        String userID = bundle.getString("userID");
+        this.userID = userID;
+
+        tts = new TextToSpeech(SigninActivity.this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    tts.setLanguage(Locale.ENGLISH);
+                }
+            }
+        });
 
         greenFrame = (View) findViewById(R.id.green_frame);
         greenFrame.bringToFront();
@@ -283,10 +303,17 @@ public class SigninActivity extends AppCompatActivity {
         mImageButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String msg = "RECORD 버튼을 눌러 녹음을 시작합니다.\n" +
+                        "최대한 네모난 프레임에 얼굴을 맞춰 사진을 찍어주세요.\n\n" +
+                        "Press the RECORD button to start recording.\n" +
+                        "Please take a picture by aligning your face in a square frame as much as possible.";
+
                 AlertDialog show = new AlertDialog.Builder(SigninActivity.this)
-                        .setMessage("This sample demonstrates how to record video using Camera2 API.")
+                        .setMessage(msg)
                         .setPositiveButton(android.R.string.ok, null)
                         .show();
+
+                //tts.speak(msg, TextToSpeech.QUEUE_FLUSH, null);
             }
         });
     }
@@ -564,7 +591,7 @@ public class SigninActivity extends AppCompatActivity {
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 
-        File path = new File (getExternalCacheDir().getAbsolutePath() + "/camtest");
+        File path = new File (getExternalCacheDir().getAbsolutePath() + "/" + userID);
         if (!path.exists()) {
             path.mkdirs();
         }
@@ -661,13 +688,32 @@ public class SigninActivity extends AppCompatActivity {
         mMediaRecorder.stop();
         mMediaRecorder.reset();
 
-        Intent mediaScanIntent = new Intent( Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        mediaScanIntent.setData(Uri.fromFile(mNextVideo));
-        sendBroadcast(mediaScanIntent);
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        Intent mediaScanIntent = new Intent( Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                        mediaScanIntent.setData(Uri.fromFile(mNextVideo));
+                        sendBroadcast(mediaScanIntent);
 
-        Toast.makeText(SigninActivity.this, "Video saved: " + mNextVideoAbsolutePath,
-                Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
+                        // 저장 경로
+                        /*
+                        Toast.makeText(SigninActivity.this, "Video saved: " + mNextVideoAbsolutePath,
+                        Toast.LENGTH_SHORT).show(); */
+                        Toast.makeText(SigninActivity.this, "Video saved!", Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, "Video saved: " + mNextVideoAbsolutePath);
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(SigninActivity.this);
+        builder.setMessage("Do you want to save the video?\n\nRe-selection is not possible.").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
 
         mNextVideoAbsolutePath = null;
         startPreview();
