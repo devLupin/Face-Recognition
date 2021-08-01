@@ -58,6 +58,11 @@ import java.util.concurrent.TimeUnit;
 
 public class SigninActivity extends AppCompatActivity {
 
+    private static final String MSG = "RECORD 버튼을 눌러 녹음을 시작합니다.\n" +
+            "최대한 네모난 프레임에 얼굴을 맞춰 사진을 찍어주세요.\n\n" +
+            "Press the RECORD button to start recording.\n" +
+            "Please take a picture by aligning your face in a square frame as much as possible.";
+
     private static final int SENSOR_ORIENTATION_DEFAULT_DEGREES = 90;
     private static final int SENSOR_ORIENTATION_INVERSE_DEGREES = 270;
     private static final SparseIntArray DEFAULT_ORIENTATIONS = new SparseIntArray();
@@ -269,6 +274,11 @@ public class SigninActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
 
+        AlertDialog show = new AlertDialog.Builder(SigninActivity.this)
+                .setMessage(MSG)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
+
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         String userID = bundle.getString("userID");
@@ -303,13 +313,8 @@ public class SigninActivity extends AppCompatActivity {
         mImageButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String msg = "RECORD 버튼을 눌러 녹음을 시작합니다.\n" +
-                        "최대한 네모난 프레임에 얼굴을 맞춰 사진을 찍어주세요.\n\n" +
-                        "Press the RECORD button to start recording.\n" +
-                        "Please take a picture by aligning your face in a square frame as much as possible.";
-
                 AlertDialog show = new AlertDialog.Builder(SigninActivity.this)
-                        .setMessage(msg)
+                        .setMessage(MSG)
                         .setPositiveButton(android.R.string.ok, null)
                         .show();
 

@@ -6,26 +6,39 @@
     android:layout_height="match_parent"
     tools:context=".SignupActivity">
 
-    <CheckBox
-        android:id="@+id/terms_conditions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="192dp"
-        android:text="Terms and Conditions"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/id_txt"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="184dp"
+        android:layout_marginTop="180dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:hint="i d                   (Only lowercase)"
         android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/policy_btn"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="@+id/policy_btn"
+        app:layout_constraintTop_toTopOf="@+id/policy_btn" />
+
+    <CheckBox
+        android:id="@+id/terms_conditions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="128dp"
+        android:text="Terms and Conditions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/policy_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:backgroundTint="#FF03DAC5"
+        android:text="details"
         app:layout_constraintEnd_toEndOf="@+id/terms_conditions"
         app:layout_constraintStart_toStartOf="@+id/terms_conditions"
         app:layout_constraintTop_toTopOf="@+id/terms_conditions" />
@@ -34,23 +47,11 @@
         android:id="@+id/sign_up_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="84dp"
         android:text="Sign up"
         app:layout_constraintEnd_toEndOf="@+id/id_txt"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/id_txt"
         app:layout_constraintTop_toBottomOf="@+id/id_txt" />
-
-    <Button
-        android:id="@+id/policy_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="policy"
-        android:backgroundTint="#FF03DAC5"
-        app:layout_constraintEnd_toEndOf="@+id/terms_conditions"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/terms_conditions"
-        app:layout_constraintTop_toBottomOf="@+id/terms_conditions" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
