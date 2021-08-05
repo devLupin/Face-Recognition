@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreateAccountActivity">
+
+    <TextView
+        android:id="@+id/title_txt"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        android:textColor="@color/cardview_dark_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:gravity="center"
+        android:hint="계정 만들기"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        app:layout_constraintEnd_toEndOf="@id/title_txt"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="@id/title_txt"
+        app:layout_constraintTop_toTopOf="@id/title_txt">
+
+        <EditText
+            android:id="@+id/first_name_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="7"
+            android:hint="성"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.078"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/last_name_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="7"
+            android:hint="이름"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.921"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/id_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:ems="15"
+            android:hint="아이디"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/id_contents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="52dp"
+            android:hint="영문, 소문자, 숫자를 사용할 수 있습니다."
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/id_txt"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/id_txt"
+            app:layout_constraintTop_toTopOf="@+id/id_txt" />
+
+        <EditText
+            android:id="@+id/pw_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="88dp"
+            android:ems="7"
+            android:hint="비밀번호"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="@+id/id_txt"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/id_txt"
+            app:layout_constraintTop_toTopOf="@+id/id_txt" />
+
+        <EditText
+            android:id="@+id/pw_confirm_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="88dp"
+            android:ems="7"
+            android:hint="확인"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="@+id/id_txt"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/id_txt"
+            app:layout_constraintTop_toTopOf="@+id/id_txt" />
+
+        <TextView
+            android:id="@+id/pw_contents"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="52dp"
+            android:hint="영문 소문자, 숫자를 조합하여 8자 이상을 사용하세요."
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/pw_txt"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/pw_txt"
+            app:layout_constraintTop_toTopOf="@+id/pw_txt" />
+
+        <EditText
+            android:id="@+id/ph_num_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="236dp"
+            android:ems="15"
+            android:hint="전화번호 (-제외)"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.527"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/email_id_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="68dp"
+            android:ems="7"
+            android:hint="이메일"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="@+id/ph_num_txt"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/ph_num_txt"
+            app:layout_constraintTop_toTopOf="@+id/ph_num_txt" />
+
+        <EditText
+            android:id="@+id/email_addr_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="68dp"
+            android:ems="7"
+            android:hint=""
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="@+id/ph_num_txt"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/ph_num_txt"
+            app:layout_constraintTop_toTopOf="@+id/ph_num_txt" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="84dp"
+            android:hint="\@"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/ph_num_txt"
+            app:layout_constraintHorizontal_bias="0.494"
+            app:layout_constraintStart_toStartOf="@+id/ph_num_txt"
+            app:layout_constraintTop_toTopOf="@+id/ph_num_txt" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <CheckBox
+        android:id="@+id/check"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="380dp"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="@+id/frame_layout"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/frame_layout"
+        app:layout_constraintTop_toTopOf="@+id/frame_layout" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:hint="입력한 사실이 틀림 없으며,"
+        app:layout_constraintEnd_toEndOf="@+id/check"
+        app:layout_constraintHorizontal_bias="0.271"
+        app:layout_constraintStart_toStartOf="@+id/check"
+        app:layout_constraintTop_toTopOf="@+id/check" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:hint="에 동의합니다."
+        app:layout_constraintEnd_toEndOf="@+id/check"
+        app:layout_constraintHorizontal_bias="0.864"
+        app:layout_constraintStart_toStartOf="@+id/check"
+        app:layout_constraintTop_toTopOf="@+id/check" />
+
+    <TextView
+        android:id="@+id/terms_and_condition_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:hint="이용약관,"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/check"
+        app:layout_constraintHorizontal_bias="0.176"
+        app:layout_constraintStart_toStartOf="@+id/check"
+        app:layout_constraintTop_toTopOf="@+id/check" />
+
+    <TextView
+        android:id="@+id/policy_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:hint="개인정보 처리방침"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/check"
+        app:layout_constraintHorizontal_bias="0.473"
+        app:layout_constraintStart_toStartOf="@+id/check"
+        app:layout_constraintTop_toTopOf="@+id/check" />
+
+    <Button
+        android:id="@+id/next_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:text="다   음"
+        app:layout_constraintEnd_toEndOf="@+id/check"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/check"
+        app:layout_constraintTop_toTopOf="@+id/check" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

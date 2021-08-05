@@ -1,0 +1,3 @@
+rootProject.name = "detection test"
+include ':app'
+include ':sdk'
