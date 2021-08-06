@@ -66,13 +66,19 @@ public class MainActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
+        id_txt = findViewById(R.id.id_txt);
+        pw_txt = findViewById(R.id.pw_txt);
         next_btn = findViewById(R.id.next_btn);
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                id_txt = findViewById(R.id.id_txt);
-                pw_txt = findViewById(R.id.pw_txt);
+                String id = id_txt.getText().toString();
+                String pw = pw_txt.getText().toString();
 
+                if(isInCorrect(id) || isInCorrect(pw)) {
+                    Toast.makeText(MainActivity.this, "모든 칸을 입력해주세요.", Toast.LENGTH_LONG).show();
+                    return;
+                }
             }
         });
 
@@ -123,6 +129,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private boolean isInCorrect(String str) {
+        if(str.isEmpty() || str == null || str.contains(" ")) {
+            return true;
+        }
+        return false;
     }
 
     @Override

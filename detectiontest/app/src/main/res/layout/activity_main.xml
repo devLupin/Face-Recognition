@@ -30,7 +30,6 @@
         android:ems="10"
         android:hint="Password"
         app:layout_constraintEnd_toEndOf="@id/id_txt"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/id_txt"
         app:layout_constraintTop_toTopOf="@id/id_txt" />
 
