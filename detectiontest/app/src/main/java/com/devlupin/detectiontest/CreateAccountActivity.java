@@ -15,8 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.devlupin.detectiontest.sql.Database;
 import com.devlupin.detectiontest.sql.InfoDBHelper;
-import com.devlupin.detectiontest.sql.SQLite;
+import com.devlupin.detectiontest.sql.Database;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
@@ -42,7 +43,10 @@ public class CreateAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
+        // DB Init
         dbHelper = new InfoDBHelper(this);
+        dbHelper.open();
+        dbHelper.create();
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -115,7 +119,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(phCheck(ph_num)) {
+                if(!phCheck(ph_num)) {
                     Toast.makeText(CreateAccountActivity.this, "전화 번호는 숫자만 입력해주세요.", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -126,9 +130,9 @@ public class CreateAccountActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(isDuplicate(SQLite.Info.ID, id) ||
-                        isDuplicate(SQLite.Info.EMAIL, email_id+"@"+email_addr) ||
-                        isDuplicate(SQLite.Info.PH_NUM, ph_num)) {
+                if(isDuplicate(Database.Info.ID, id) ||
+                        isDuplicate(Database.Info.EMAIL, email_id+"@"+email_addr) ||
+                        isDuplicate(Database.Info.PH_NUM, ph_num)) {
                     Intent intent = new Intent(CreateAccountActivity.this, DuplicateAccountActivity.class);
                     startActivity(intent);
                     finish();
@@ -186,22 +190,18 @@ public class CreateAccountActivity extends AppCompatActivity {
     }
 
     private boolean phCheck(String ph_num) {
-        for(int i=0; i<ph_num.length(); i++) {
-            if((int)ph_num.charAt(i) >= '0' && (int)ph_num.charAt(i) <= '9')
-                continue;
-            else
-                return false;
+        try {
+            Double.parseDouble(ph_num);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
-        return true;
     }
 
-    // SELECT field FROM TABLE WHERE field="arg";
     private boolean isDuplicate(String field, String arg) {
+
         // 데이터베이스 조회해서 중복되면 true 리턴
-
-        Cursor results = dbHelper.select(field, arg);
-
-        if(results.moveToNext())
+        if(!dbHelper.isEmpty(field, arg))
             return true;
         else
             return false;

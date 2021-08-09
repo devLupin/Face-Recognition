@@ -3,58 +3,87 @@ package com.devlupin.detectiontest.sql;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class InfoDBHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "SCLAB";
-    public static final int DATABASE_VERSION = 1;
+public class InfoDBHelper {
+    private static final String DATABASE_NAME = "SCLAB";
+    private static final int DATABASE_VERSION = 1;
+    public static SQLiteDatabase mDB;
+    public static SQLiteDatabase rDB;
+    private DatabaseHelper mDBHelper;
+    private Context mCtx;
 
-    public InfoDBHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    private class DatabaseHelper extends SQLiteOpenHelper{
+
+        public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+            super(context, name, factory, version);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db){
+            db.execSQL(Database.Info.SQL_CREATE_TABLE);
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
+            db.execSQL("DROP TABLE IF EXISTS "+ Database.Info.TABLE_NAME);
+            onCreate(db);
+        }
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(SQLite.Info.SQL_CREATE_TABLE);
+    public InfoDBHelper(Context context){
+        this.mCtx = context;
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL(SQLite.Info.SQL_DELETE_TABLE);
-        onCreate(sqLiteDatabase);
+    public InfoDBHelper open() throws SQLException {
+        mDBHelper = new DatabaseHelper(mCtx, DATABASE_NAME, null, DATABASE_VERSION);
+        mDB = mDBHelper.getWritableDatabase();
+        rDB = mDBHelper.getReadableDatabase();
+        return this;
     }
 
-    public void insert(String name, String id, String pw, String ph_num, String email) {
-        SQLiteDatabase db = getReadableDatabase();
+    public void create(){
+        mDBHelper.onCreate(mDB);
+    }
 
+    public void close(){
+        mDB.close();
+    }
+
+    public long insert(String name, String id, String pw, String ph_num, String email){
         ContentValues values = new ContentValues();
-        values.put(SQLite.Info.NAME, name);
-        values.put(SQLite.Info.ID, id);
-        values.put(SQLite.Info.PW, pw);
-        values.put(SQLite.Info.PH_NUM, ph_num);
-        values.put(SQLite.Info.EMAIL, email);
-
-        db.insert(SQLite.Info.TABLE_NAME, null, values);
+        values.put(Database.Info.NAME, name);
+        values.put(Database.Info.ID, id);
+        values.put(Database.Info.PW, pw);
+        values.put(Database.Info.PH_NUM, ph_num);
+        values.put(Database.Info.EMAIL, email);
+        return mDB.insert(Database.Info.TABLE_NAME, null, values);
     }
 
-    public Cursor select() {
-        SQLiteDatabase db = getReadableDatabase();
+    // empty is true
+    public boolean isEmpty(String field, String arg){
+        String sql = "SELECT * FROM " + Database.Info.TABLE_NAME + " WHERE " + field + "=" + "'" + arg + "'";
+        Cursor cursor = rDB.rawQuery(sql, null);
 
-        String sql = "SELECT * FROM " + SQLite.Info.TABLE_NAME + ";";
-        Cursor results = db.rawQuery(sql, null);
+        if(!cursor.moveToNext())
+            return true;
 
-        results.moveToFirst();
-        return results;
+        else
+            return false;
     }
 
-    public Cursor select(String field, String arg) {
-        SQLiteDatabase db = getReadableDatabase();
+    public Cursor selectColumns(){
+        return mDB.query(Database.Info.TABLE_NAME, null, null, null, null, null, null);
+    }
 
-        String sql = "SELECT " + field + " FROM " + SQLite.Info.TABLE_NAME + " WHERE " + field + "=" + "'" + arg + "'";
-        Cursor results = db.rawQuery(sql, null);
+    public boolean update(ContentValues values, String pw){
+        return mDB.update(Database.Info.TABLE_NAME, values, Database.Info.PW+ "=" + pw, null) > 0;
+    }
 
-        results.moveToFirst();
-        return results;
+    // Delete Column
+    public boolean delete(String id){
+        return mDB.delete(Database.Info.TABLE_NAME, Database.Info.ID+ "=" + id, null) > 0;
     }
 }

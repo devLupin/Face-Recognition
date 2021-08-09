@@ -3,11 +3,15 @@ package com.devlupin.detectiontest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.devlupin.detectiontest.sql.Database;
+import com.devlupin.detectiontest.sql.InfoDBHelper;
 
 public class IDFindActivity extends AppCompatActivity {
 
@@ -15,10 +19,17 @@ public class IDFindActivity extends AppCompatActivity {
     private EditText ph_num_txt;
     private Button next_btn;
 
+    private InfoDBHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_idfind);
+
+        // DB Init
+        dbHelper = new InfoDBHelper(this);
+        dbHelper.open();
+        dbHelper.create();
 
         email_txt = findViewById(R.id.email_txt);
         ph_num_txt = findViewById(R.id.ph_num_txt);
@@ -35,17 +46,18 @@ public class IDFindActivity extends AppCompatActivity {
                 }
 
                 // 이메일과 폰번호를 대조하여 아이디를 찾는다.
-                String id = "";
+                String id = isFind(ph_num, email);
+
+                // 일치x?
+                if(id == null) {
+                    Intent intent = new Intent(IDFindActivity.this, FindFailActivity.class);
+                    startActivity(intent);
+                }
 
                 //존재하면?
                 Intent intent = new Intent(IDFindActivity.this, IDFindSuccessActivity.class);
                 startActivity(intent);
                 intent.putExtra("id", id);
-                finish();
-
-                //없다면
-                //Intent intent = new Intent(IDFindActivity.this, FindFailActivity.class);
-                startActivity(intent);
                 finish();
             }
         });
@@ -56,6 +68,22 @@ public class IDFindActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    private String isFind(String ph_num, String email) {
+        Cursor cursor = dbHelper.selectColumns();
+
+        while(cursor.moveToNext()) {
+            String cur_ph_num = cursor.getString(cursor.getColumnIndex(Database.Info.PH_NUM));
+            String cur_email = cursor.getString(cursor.getColumnIndex(Database.Info.EMAIL));
+            String cur_id = cursor.getString(cursor.getColumnIndex(Database.Info.ID));
+
+            if(cur_ph_num.equals(ph_num) && cur_email.equals(email)) {
+                return cur_id;
+            }
+        }
+
+        return null;
     }
 
     @Override

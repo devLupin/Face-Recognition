@@ -2,12 +2,9 @@ package com.devlupin.detectiontest.sql;
 
 import android.provider.BaseColumns;
 
-public final class SQLite {
-    private SQLite() {
+public final class Database {
 
-    }
-
-    public static class Info implements BaseColumns {
+    public static final class Info implements BaseColumns {
         public static final String TABLE_NAME = "INFO";
         public static final String NAME = "NAME";
         public static final String ID = "ID";

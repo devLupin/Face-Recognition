@@ -2,12 +2,17 @@ package com.devlupin.detectiontest;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.devlupin.detectiontest.sql.Database;
+import com.devlupin.detectiontest.sql.InfoDBHelper;
 
 public class PWFindSuccessActivity extends AppCompatActivity {
 
@@ -16,10 +21,17 @@ public class PWFindSuccessActivity extends AppCompatActivity {
 
     private Button next_btn;
 
+    private InfoDBHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pwfind_success);
+
+        // DB Init
+        dbHelper = new InfoDBHelper(this);
+        dbHelper.open();
+        dbHelper.create();
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -46,7 +58,15 @@ public class PWFindSuccessActivity extends AppCompatActivity {
                 }
 
                 // id 값에서 입력된 패스워드로 데이터베이스 업데이트 코드 삽입
-                //
+                // public boolean update(String name, String id, String pw, String ph_num, String email)
+                ContentValues values = find(id);
+
+                if(values == null) {
+                    Toast.makeText(PWFindSuccessActivity.this, "DB error in PWFindSuccess()", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                dbHelper.update(values, pw);
 
                 Intent intent = new Intent(PWFindSuccessActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -61,5 +81,30 @@ public class PWFindSuccessActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    private ContentValues find(String id) {
+        ContentValues values = new ContentValues();
+        Cursor cursor = dbHelper.selectColumns();
+
+        while(cursor.moveToNext()) {
+            String cur_name = cursor.getString(cursor.getColumnIndex(Database.Info.NAME));
+            String cur_id = cursor.getString(cursor.getColumnIndex(Database.Info.ID));
+            String cur_pw = cursor.getString(cursor.getColumnIndex(Database.Info.PW));
+            String cur_ph_num = cursor.getString(cursor.getColumnIndex(Database.Info.PH_NUM));
+            String cur_email = cursor.getString(cursor.getColumnIndex(Database.Info.EMAIL));
+
+            if(cur_id.equals(id)) {
+                values.put(Database.Info.NAME, cur_name);
+                values.put(Database.Info.ID, cur_id);
+                values.put(Database.Info.PW, cur_pw);
+                values.put(Database.Info.PH_NUM, cur_ph_num);
+                values.put(Database.Info.EMAIL, cur_email);
+
+                return values;
+            }
+        }
+
+        return null;
     }
 }

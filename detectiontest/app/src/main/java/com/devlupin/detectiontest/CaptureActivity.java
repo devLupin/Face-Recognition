@@ -42,6 +42,8 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 public class CaptureActivity extends AppCompatActivity
         implements CameraBridgeViewBase.CvCameraViewListener2 {
 
+    private String id;
+
     private static final String TAG = "opencv";
     private Mat matInput;
     private Mat matResult;
@@ -133,6 +135,11 @@ public class CaptureActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        String id = bundle.getString("id");
+        this.id = id;
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);

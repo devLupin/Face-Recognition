@@ -40,6 +40,7 @@
         android:layout_marginTop="48dp"
         android:ems="10"
         android:hint="새로운 비밀번호 입력"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="@+id/textView"
         app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toTopOf="@+id/textView" />
@@ -50,6 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:ems="10"
+        android:inputType="textPassword"
         android:hint="확인"
         app:layout_constraintEnd_toEndOf="@+id/pw_txt"
         app:layout_constraintStart_toStartOf="@+id/pw_txt"

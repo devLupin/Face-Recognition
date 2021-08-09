@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:ems="10"
+        android:inputType="textPassword"
         android:hint="Password"
         app:layout_constraintEnd_toEndOf="@id/id_txt"
         app:layout_constraintStart_toStartOf="@id/id_txt"

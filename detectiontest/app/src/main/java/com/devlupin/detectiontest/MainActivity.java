@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +23,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.devlupin.detectiontest.sql.Database;
+import com.devlupin.detectiontest.sql.InfoDBHelper;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -59,10 +63,17 @@ public class MainActivity extends AppCompatActivity {
     private TextView terms_and_condition_btn;
     private TextView policy_btn;
 
+    private InfoDBHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // DB Init
+        dbHelper = new InfoDBHelper(this);
+        dbHelper.open();
+        dbHelper.create();
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -79,6 +90,16 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "모든 칸을 입력해주세요.", Toast.LENGTH_LONG).show();
                     return;
                 }
+
+                if(!isLogin(id, pw)) {
+                    Intent intent = new Intent(MainActivity.this, FindFailActivity.class);
+                    startActivity(intent);
+                    return;
+                }
+
+                Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
+                startActivity(intent);
+                intent.putExtra("id", id);
             }
         });
 
@@ -87,7 +108,9 @@ public class MainActivity extends AppCompatActivity {
         find_id_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(MainActivity.this, IDFindActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -96,7 +119,9 @@ public class MainActivity extends AppCompatActivity {
         find_pw_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(MainActivity.this, PWFindActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -107,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, CreateAccountActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -135,6 +161,24 @@ public class MainActivity extends AppCompatActivity {
         if(str.isEmpty() || str == null || str.contains(" ")) {
             return true;
         }
+        return false;
+    }
+
+    private boolean isLogin(String id, String pw) {
+        Cursor cursor = dbHelper.selectColumns();
+
+        while(cursor.moveToNext()) {
+            //String cur_name = cursor.getString(cursor.getColumnIndex(Database.Info.NAME));
+            String cur_id = cursor.getString(cursor.getColumnIndex(Database.Info.ID));
+            String cur_pw = cursor.getString(cursor.getColumnIndex(Database.Info.PW));
+            //String cur_ph_num = cursor.getString(cursor.getColumnIndex(Database.Info.PH_NUM));
+            //String cur_email = cursor.getString(cursor.getColumnIndex(Database.Info.EMAIL));
+
+            if(cur_id.equals(id) && cur_pw.equals(pw)) {
+                return true;
+            }
+        }
+
         return false;
     }
 
