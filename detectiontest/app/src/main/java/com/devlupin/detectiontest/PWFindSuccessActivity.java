@@ -52,7 +52,7 @@ public class PWFindSuccessActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(pw.equals(pw_confirm)) {
+                if(!pw.equals(pw_confirm)) {
                     Toast.makeText(PWFindSuccessActivity.this, "비밀번호가 동일하지 않습니다.", Toast.LENGTH_LONG).show();
                     return;
                 }

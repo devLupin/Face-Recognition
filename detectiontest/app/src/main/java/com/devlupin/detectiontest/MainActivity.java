@@ -98,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
-                startActivity(intent);
                 intent.putExtra("id", id);
+                startActivity(intent);
             }
         });
 

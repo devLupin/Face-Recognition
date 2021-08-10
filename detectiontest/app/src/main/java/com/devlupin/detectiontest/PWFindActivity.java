@@ -58,9 +58,10 @@ public class PWFindActivity extends AppCompatActivity {
 
                 //존재하면?
                 Intent intent = new Intent(PWFindActivity.this, PWFindSuccessActivity.class);
-                startActivity(intent);
                 intent.putExtra("id", id);
+                startActivity(intent);
                 finish();
+                return;
             }
         });
     }

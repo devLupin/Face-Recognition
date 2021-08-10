@@ -52,12 +52,13 @@ public class IDFindActivity extends AppCompatActivity {
                 if(id == null) {
                     Intent intent = new Intent(IDFindActivity.this, FindFailActivity.class);
                     startActivity(intent);
+                    return;
                 }
 
                 //존재하면?
                 Intent intent = new Intent(IDFindActivity.this, IDFindSuccessActivity.class);
-                startActivity(intent);
                 intent.putExtra("id", id);
+                startActivity(intent);
                 finish();
             }
         });

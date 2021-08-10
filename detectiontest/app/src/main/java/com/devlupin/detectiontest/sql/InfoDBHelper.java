@@ -79,7 +79,7 @@ public class InfoDBHelper {
     }
 
     public boolean update(ContentValues values, String pw){
-        return mDB.update(Database.Info.TABLE_NAME, values, Database.Info.PW+ "=" + pw, null) > 0;
+        return mDB.update(Database.Info.TABLE_NAME, values, Database.Info.PW + "=?", new String[]{pw}) > 0;
     }
 
     // Delete Column
