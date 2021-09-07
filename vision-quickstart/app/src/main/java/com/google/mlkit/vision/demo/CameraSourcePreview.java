@@ -20,13 +20,20 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.hardware.Camera;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import com.google.android.gms.common.images.Size;
 import com.google.mlkit.vision.demo.preference.PreferenceUtils;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /** Preview the camera image in the screen. */
@@ -39,6 +46,9 @@ public class CameraSourcePreview extends ViewGroup {
   private boolean surfaceAvailable;
   private CameraSource cameraSource;
 
+  private Camera camera = null;
+  private SurfaceHolder surfaceHolder;
+
   private GraphicOverlay overlay;
 
   public CameraSourcePreview(Context context, AttributeSet attrs) {
@@ -50,6 +60,19 @@ public class CameraSourcePreview extends ViewGroup {
     surfaceView = new SurfaceView(context);
     surfaceView.getHolder().addCallback(new SurfaceCallback());
     addView(surfaceView);
+  }
+
+  public void getPicture() {
+    cameraSource.captureImage(surfaceView, surfaceView.getHolder());
+  }
+
+  public boolean capture(Camera.PictureCallback callback){
+    if(camera != null){
+      camera.takePicture(null, null, callback);
+      return true;
+    } else{
+      return false;
+    }
   }
 
   private void start(CameraSource cameraSource) throws IOException {
@@ -111,8 +134,10 @@ public class CameraSourcePreview extends ViewGroup {
     @Override
     public void surfaceCreated(SurfaceHolder surface) {
       surfaceAvailable = true;
+      camera = Camera.open();
       try {
         startIfReady();
+        camera.setPreviewDisplay(surface);
       } catch (IOException e) {
         Log.e(TAG, "Could not start camera source.", e);
       }
@@ -121,10 +146,14 @@ public class CameraSourcePreview extends ViewGroup {
     @Override
     public void surfaceDestroyed(SurfaceHolder surface) {
       surfaceAvailable = false;
+
+      camera.stopPreview();
+      camera.release();
+      camera = null;
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) { cameraSource.refreshCamera(surfaceView.getHolder()); }
   }
 
   @Override

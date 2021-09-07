@@ -99,14 +99,17 @@ com/google/mlkit/vision/demo/CameraSource.java
  com.google.mlkit.vision.demo.CameraSource$CameraPreviewCallback
  com.google.mlkit.vision.demo.CameraSource$FrameProcessingRunnable
  com.google.mlkit.vision.demo.CameraSource$SizePair
-com/google/mlkit/vision/demo/java/LivePreviewActivity.java
- com.google.mlkit.vision.demo.java.LivePreviewActivity
+com/google/mlkit/vision/demo/ScopedExecutor.java
+ com.google.mlkit.vision.demo.ScopedExecutor
 com/google/mlkit/vision/demo/java/IDFindActivity.java
  com.google.mlkit.vision.demo.java.IDFindActivity
  com.google.mlkit.vision.demo.java.IDFindActivity$1
-com/google/mlkit/vision/demo/java/ChooserActivity.java
- com.google.mlkit.vision.demo.java.ChooserActivity
 com/google/mlkit/vision/demo/CameraXViewModel.java
  com.google.mlkit.vision.demo.CameraXViewModel
-com/google/mlkit/vision/demo/ScopedExecutor.java
- com.google.mlkit.vision.demo.ScopedExecutor
+com/google/mlkit/vision/demo/java/LivePreviewActivity.java
+ com.google.mlkit.vision.demo.java.LivePreviewActivity
+ com.google.mlkit.vision.demo.java.LivePreviewActivity$1
+ com.google.mlkit.vision.demo.java.LivePreviewActivity$1$1
+ com.google.mlkit.vision.demo.java.LivePreviewActivity$2
+com/google/mlkit/vision/demo/java/ChooserActivity.java
+ com.google.mlkit.vision.demo.java.ChooserActivity

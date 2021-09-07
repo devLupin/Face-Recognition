@@ -20,18 +20,31 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
+import androidx.core.app.ActivityCompat;
+
+import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
 import android.view.WindowManager;
 import com.google.android.gms.common.images.Size;
 import com.google.mlkit.vision.demo.preference.PreferenceUtils;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -43,7 +56,8 @@ import java.util.List;
  * displaying extra information). This receives preview frames from the camera at a specified rate,
  * sending those frames to child classes' detectors / classifiers as fast as it is able to process.
  */
-public class CameraSource {
+public class CameraSource
+        implements ActivityCompat.OnRequestPermissionsResultCallback {
   @SuppressLint("InlinedApi")
   public static final int CAMERA_FACING_BACK = CameraInfo.CAMERA_FACING_BACK;
 
@@ -117,11 +131,70 @@ public class CameraSource {
     graphicOverlay = overlay;
     graphicOverlay.clear();
     processingRunnable = new FrameProcessingRunnable();
+
+    captureInit();
   }
 
   // ==============================================================================================
   // Public
   // ==============================================================================================
+
+  private Camera.PictureCallback jpegCallback;
+
+  @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+  public void captureInit() {
+    jpegCallback = new Camera.PictureCallback() {
+      @Override
+      public void onPictureTaken(byte[] bytes, Camera camera) {
+
+        FileOutputStream outputStream = null;
+
+        try {
+          File path = new File(Environment.getExternalStorageDirectory() + "/images/");
+          path.mkdirs();
+
+          File file = new File(path, "1.jpg");
+          String file_name = file.toString();
+
+          outputStream = new FileOutputStream(file_name);
+          outputStream.write(bytes);
+          outputStream.close();
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    };
+  }
+
+  public void captureImage(View v, SurfaceHolder surfaceHolder) {
+    camera.takePicture(null, null, jpegCallback);
+    refreshCamera(surfaceHolder);
+  }
+
+  public void refreshCamera(SurfaceHolder surfaceHolder) {
+    if (surfaceHolder.getSurface() == null) {
+      // preview surface does not exist
+      return;
+    }
+    // stop preview before making changes
+    try {
+      camera.stopPreview();
+    } catch (Exception e) {
+      // ignore: tried to stop a non-existent preview
+    }
+
+    // set preview size and make any resize, rotate or
+    // reformatting changes here
+    // start preview with new settings
+    try {
+      camera.setPreviewDisplay(surfaceHolder);
+      camera.startPreview();
+    } catch (Exception e) {
+
+    }
+  }
 
   /** Stops the camera and releases the resources of the camera and underlying detector. */
   public void release() {
@@ -375,6 +448,11 @@ public class CameraSource {
     }
 
     return selectedPair;
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
   }
 
   /**

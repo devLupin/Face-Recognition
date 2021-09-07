@@ -1,11 +1,11 @@
 [
     {
-        "merged": "C:\\Users\\devLupin\\AndroidStudioProjects\\Aquisition\\vision-quickstart\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_duplicate_account.xml.flat",
-        "source": "C:\\Users\\devLupin\\AndroidStudioProjects\\Aquisition\\vision-quickstart\\app\\src\\main\\res\\layout\\activity_duplicate_account.xml"
-    },
-    {
         "merged": "C:\\Users\\devLupin\\AndroidStudioProjects\\Aquisition\\vision-quickstart\\app\\build\\intermediates\\res\\merged\\debug\\layout_settings_style.xml.flat",
         "source": "C:\\Users\\devLupin\\AndroidStudioProjects\\Aquisition\\vision-quickstart\\app\\src\\main\\res\\layout\\settings_style.xml"
+    },
+    {
+        "merged": "C:\\Users\\devLupin\\AndroidStudioProjects\\Aquisition\\vision-quickstart\\app\\build\\intermediates\\res\\merged\\debug\\layout_activity_duplicate_account.xml.flat",
+        "source": "C:\\Users\\devLupin\\AndroidStudioProjects\\Aquisition\\vision-quickstart\\app\\src\\main\\res\\layout\\activity_duplicate_account.xml"
     },
     {
         "merged": "C:\\Users\\devLupin\\AndroidStudioProjects\\Aquisition\\vision-quickstart\\app\\build\\intermediates\\res\\merged\\debug\\drawable-hdpi_ic_settings_white_24dp.png.flat",

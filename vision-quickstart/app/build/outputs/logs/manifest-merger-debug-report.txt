@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-96:12
-INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-96:12
-INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-96:12
-INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-96:12
+ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-97:12
+INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-97:12
+INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-97:12
+INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-97:12
 MERGED from [androidx.multidex:multidex:2.0.1] C:\Users\devLupin\Desktop\FaceDetectCamera-master\caches\transforms-2\files-2.1\ce8dd2100ffd5b4eae657f5daec65fe0\multidex-2.0.1\AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.mlkit:barcode-scanning:17.0.0] C:\Users\devLupin\Desktop\FaceDetectCamera-master\caches\transforms-2\files-2.1\a1922957cdf0e4d7808cd8fcc9dd2668\jetified-barcode-scanning-17.0.0\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.mlkit:object-detection:16.2.6] C:\Users\devLupin\Desktop\FaceDetectCamera-master\caches\transforms-2\files-2.1\3feef52281e506cfa796d7a1c874517d\jetified-object-detection-16.2.6\AndroidManifest.xml:2:1-17:12
@@ -84,22 +84,22 @@ MERGED from [androidx.print:print:1.0.0] C:\Users\devLupin\Desktop\FaceDetectCam
 MERGED from [androidx.interpolator:interpolator:1.0.0] C:\Users\devLupin\Desktop\FaceDetectCamera-master\caches\transforms-2\files-2.1\8ddc9952f727e6b4648fb3647c864837\interpolator-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.android.odml:image:1.0.0-beta1] C:\Users\devLupin\Desktop\FaceDetectCamera-master\caches\transforms-2\files-2.1\4f7cc3f0a1b8fce3778652a3c48c4b4d\jetified-image-1.0.0-beta1\AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.annotation:annotation-experimental:1.0.0] C:\Users\devLupin\Desktop\FaceDetectCamera-master\caches\transforms-2\files-2.1\c1bc2009ed393c1281f28af6bb79c366\jetified-annotation-experimental-1.0.0\AndroidManifest.xml:17:1-24:12
-INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-96:12
-INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-96:12
-INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-96:12
+INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-97:12
+INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-97:12
+INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-97:12
 	package
 		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:4:5-43
 		INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-96:12
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-97:12
 		INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml
 	xmlns:tools
 		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:3:5-51
 	android:versionCode
 		INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-96:12
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:1-97:12
 		INJECTED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:2:11-69
@@ -312,7 +312,7 @@ ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\
 	android:name
 		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:24:21-70
 application
-ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:28:5-94:19
+ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:28:5-95:19
 MERGED from [com.google.mlkit:object-detection:16.2.6] C:\Users\devLupin\Desktop\FaceDetectCamera-master\caches\transforms-2\files-2.1\3feef52281e506cfa796d7a1c874517d\jetified-object-detection-16.2.6\AndroidManifest.xml:7:5-15:19
 MERGED from [com.google.mlkit:object-detection:16.2.6] C:\Users\devLupin\Desktop\FaceDetectCamera-master\caches\transforms-2\files-2.1\3feef52281e506cfa796d7a1c874517d\jetified-object-detection-16.2.6\AndroidManifest.xml:7:5-15:19
 MERGED from [com.google.mlkit:object-detection-custom:16.3.3] C:\Users\devLupin\Desktop\FaceDetectCamera-master\caches\transforms-2\files-2.1\661ee69636ad8244d4a83cc21dc6f621\jetified-object-detection-custom-16.3.3\AndroidManifest.xml:7:5-15:19
@@ -440,57 +440,57 @@ ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\
 	android:name
 		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:61:13-56
 activity#com.google.mlkit.vision.demo.java.StartActivity
-ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:63:9-70:20
+ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:63:9-66:20
 	android:exported
 		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:65:13-36
 	android:name
 		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:64:13-47
-intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:66:13-69:29
-action#android.intent.action.MAIN
-ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:67:17-69
-	android:name
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:67:25-66
-category#android.intent.category.LAUNCHER
-ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:68:17-77
-	android:name
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:68:27-74
 meta-data#com.google.android.gms.version
-ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:72:9-74:69
+ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:68:9-70:69
 MERGED from [com.google.android.gms:play-services-basement:17.6.0] C:\Users\devLupin\Desktop\FaceDetectCamera-master\caches\transforms-2\files-2.1\a2e4059bb053660265454733f2ea3145\jetified-play-services-basement-17.6.0\AndroidManifest.xml:23:9-25:69
 MERGED from [com.google.android.gms:play-services-basement:17.6.0] C:\Users\devLupin\Desktop\FaceDetectCamera-master\caches\transforms-2\files-2.1\a2e4059bb053660265454733f2ea3145\jetified-play-services-basement-17.6.0\AndroidManifest.xml:23:9-25:69
 	android:value
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:74:13-66
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:70:13-66
 	android:name
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:73:13-58
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:69:13-58
 meta-data#com.google.mlkit.vision.DEPENDENCIES
-ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:79:9-81:52
+ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:75:9-77:52
 	android:value
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:81:13-49
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:77:13-49
 	android:name
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:80:13-64
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:76:13-64
 activity#com.google.mlkit.vision.demo.java.ChooserActivity
-ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:83:9-85:39
+ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:79:9-86:20
 	android:exported
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:85:13-36
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:81:13-36
 	android:name
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:84:13-49
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:80:13-49
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:82:13-85:29
+action#android.intent.action.MAIN
+ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:83:17-69
+	android:name
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:83:25-66
+category#android.intent.category.LAUNCHER
+ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:84:17-77
+	android:name
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:84:27-74
 activity#com.google.mlkit.vision.demo.java.LivePreviewActivity
-ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:86:9-89:47
+ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:87:9-90:47
 	android:exported
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:88:13-36
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:89:13-36
 	android:theme
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:89:13-44
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:90:13-44
 	android:name
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:87:13-53
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:88:13-53
 activity#com.google.mlkit.vision.demo.java.CameraXLivePreviewActivity
-ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:90:9-93:47
+ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:91:9-94:47
 	android:exported
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:92:13-36
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:93:13-36
 	android:theme
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:93:13-44
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:94:13-44
 	android:name
-		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:91:13-60
+		ADDED from C:\Users\devLupin\AndroidStudioProjects\Aquisition\vision-quickstart\app\src\main\AndroidManifest.xml:92:13-60
 service#com.google.mlkit.common.internal.MlKitComponentDiscoveryService
 ADDED from [com.google.mlkit:object-detection:16.2.6] C:\Users\devLupin\Desktop\FaceDetectCamera-master\caches\transforms-2\files-2.1\3feef52281e506cfa796d7a1c874517d\jetified-object-detection-16.2.6\AndroidManifest.xml:8:9-14:19
 MERGED from [com.google.mlkit:object-detection-custom:16.3.3] C:\Users\devLupin\Desktop\FaceDetectCamera-master\caches\transforms-2\files-2.1\661ee69636ad8244d4a83cc21dc6f621\jetified-object-detection-custom-16.3.3\AndroidManifest.xml:8:9-14:19

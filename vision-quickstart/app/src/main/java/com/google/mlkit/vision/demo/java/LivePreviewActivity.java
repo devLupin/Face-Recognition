@@ -20,10 +20,14 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.hardware.Camera;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
@@ -51,6 +55,9 @@ public final class LivePreviewActivity extends AppCompatActivity
   private GraphicOverlay graphicOverlay;
   private String selectedModel = "Face Detection";
 
+  private Button capture_btn;
+  private ImageButton info;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -67,6 +74,32 @@ public final class LivePreviewActivity extends AppCompatActivity
     if (graphicOverlay == null) {
       Log.d(TAG, "graphicOverlay is null");
     }
+
+    capture_btn = findViewById(R.id.capture_btn);
+    capture_btn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        //preview.getPicture();
+        preview.capture(new Camera.PictureCallback() {
+          @Override
+          public void onPictureTaken(byte[] data, Camera camera) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+
+            options.inSampleSize = 1;
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+            camera.startPreview();
+          }
+        });
+      }
+    });
+
+    info = findViewById(R.id.info);
+    info.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+      }
+    });
 
     if (allPermissionsGranted()) {
       createCameraSource(selectedModel);
@@ -163,6 +196,8 @@ public final class LivePreviewActivity extends AppCompatActivity
       if (!isPermissionGranted(this, permission)) {
         return false;
       }
+
+
     }
     return true;
   }
