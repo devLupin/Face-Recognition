@@ -1,73 +1,61 @@
-<!doctype html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script defer src="face-api.js"></script>
     <script defer src="script.js"></script>
-    <script defer src="face-api.min.js"></script>
     <style>
-        /* CSS comes here */
-        #video {
-            border: 1px solid black;
-            width: 420px;
-            height: 340px;
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            /* justify-content: center;
+            align-items: center; */
         }
 
-        #photo {
-            border: 1px solid black;
-            width: 420px;
-            height: 340px;
+        #camera--sensor, #camera--output{
+            height: 0%;
+            width: 0%;
         }
 
-        #canvas {
-            display: none;
-        }
-
-        .camera {
-            width: 440px;
-            display: inline-block;
-        }
-
-        .output {
-            width: 440px;
-            display: inline-block;
-        }
-
-        #startbutton {
-            display: block;
-            position: relative;
-            margin-left: auto;
-            margin-right: auto;
-            bottom: 36px;
-            padding: 5px;
-            background-color: #6a67ce;
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            font-size: 14px;
-            color: rgba(255, 255, 255, 1.0);
-            cursor: pointer;
-        }
-
-        .contentarea {
+        #camera--trigger{
+            width: 180px;
+            color: white;
+            background-color: black;
             font-size: 16px;
-            font-family: Arial;
+            border-radius: 30px;
+            border: none;
+            padding: 15px 20px;
             text-align: center;
+            box-shadow: 0 5px 10px 0 rgba(0,0,0,0, 0.2);
+            position: fixed;
+            bottom: 30px;
+            left: calc(50% - 90px);
+        }
+
+        .taken {
+            height: 140px!important;
+            width: 220px!important;
+            border: solid 2px rgb(121, 200, 253);
+        }
+
+        canvas {
+            position: absolute;
         }
     </style>
-    <title>Face acquisition</title>
 </head>
 
 <body>
-    <div class="contentarea">
-        <!-- <h1>
-            출입 관리를 위한 얼굴인식 시스템
-        </h1> -->
-        <div class="camera">
-            <video id="video">Video stream not available.</video>
-        </div>
-        <div><button id="startbutton">Take photo</button></div>
-        <canvas id="canvas"></canvas>
-        <div class="output">
-            <img id="photo" alt="The screen capture will appear in this box.">
-        </div>
-    </div>
+    <video id="video" width="720" height="560" autoplay muted></video>
+    <canvas id="camera--sensor"></canvas>
+    <img src="//:0" alt="" id="camera--output">
+    <button id="camera--trigger">사진촬영</button>
 </body>
 
 </html>
