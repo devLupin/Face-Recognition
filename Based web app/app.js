@@ -20,10 +20,10 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + "/Face-Detection/index.html")
 })
 
-app.get('/main', function(req, res) {
-    res.sendFile(__dirname + "/public/main.html")
-})
+// app.get('/main', function(req, res) {
+//     res.sendFile(__dirname + "/public/main.html")
+// })
 
-// public 디렉토리를 static으로 기억
-// public 내부의 파일들을 localhost:3000/파일명으로 브라우저에서 불러옴
-app.use(express.static('public'));
+// // public 디렉토리를 static으로 기억
+// // public 내부의 파일들을 localhost:3000/파일명으로 브라우저에서 불러옴
+// app.use(express.static('public'));

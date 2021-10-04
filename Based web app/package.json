@@ -1,8 +1,8 @@
 {
-  "name": "node-server",
+  "name": "web_app",
   "version": "1.0.0",
-  "description": "nodesever test",
-  "main": "index.js",
+  "description": "",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
