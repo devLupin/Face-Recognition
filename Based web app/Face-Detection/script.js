@@ -1,7 +1,8 @@
 const video = document.getElementById('video')
-const cameraOutput = document.querySelector("#camera--output");
-const cameraSensor = document.querySelector("#camera--sensor");
-const cameraTrigger = document.querySelector("#camera--trigger");
+const cameraOutput = document.getElementById("camera--output");
+const cameraSensor = document.getElementById("camera--sensor");
+const cameraTrigger = document.getElementById("camera--trigger")
+const savedBtn = document.getElementById('saved_btn');
 
 Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
@@ -33,10 +34,29 @@ video.addEventListener('play', () => {
 })
 
 cameraTrigger.addEventListener("click", function () {
-    cameraSensor.width = video.videoWidth; //640으로 정해져서 나오네?
+    cameraSensor.width = video.videoWidth;
     cameraSensor.height = video.videoHeight;
     cameraSensor.getContext("2d").drawImage(video, 0, 0);
     cameraOutput.src = cameraSensor.toDataURL("image/webp");
     cameraOutput.classList.add("taken");
     console.log(cameraSensor.height);
 });
+
+savedBtn.addEventListener("click", function() {
+    if(confirm("저장하시겠습니까?") == true) {
+        if(cameraOutput.src != null) {
+            downloadURI(cameraOutput.src, "aa.png");
+        }
+    }
+    else {
+        return;
+    }
+});
+
+function downloadURI(uri, name) {
+    var link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+}
