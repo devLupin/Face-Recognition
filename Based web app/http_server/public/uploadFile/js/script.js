@@ -1,23 +1,21 @@
-// for uploadFile
-var http = require('http');
-var fs = require('fs');
-var formidable = require('formidable');
-const path = require("path");
+$(function(){
+	$('#submit').click(function(){   //submit 버튼을 클릭하였을 때
+        let sendData = "message";
+		$.ajax({
+			type:'post',   //post 방식으로 전송
+			url:'/test',   //데이터를 주고받을 파일 주소
+			data: {
+                name : "name",
+                price : "price"
+            },
+			dataType:'json',   //html 파일 형식으로 값을 담아온다.
+			success : function(data){   //파일 주고받기가 성공했을 경우. data 변수 안에 값을 담아온다.
+                alert("send data !");
+            },
+            error : function(err) {
+                alert("failed : " + err);
+            }
+		});
+	});
+});
 
-// replace this with the location to save uploaded files
-const upload_path = path.resolve(__dirname, "./img/");
-
-async function uploadFile() {
-    var form = new formidable.IncomingForm();
-    form.parse(req, function (err, fields, files) {
-        // oldpath : temporary folder to which file is saved to
-        var oldpath = files.filetoupload.path;
-        var newpath = upload_path + files.filetoupload.name;
-        // copy the file to a new location
-        fs.rename(oldpath, newpath, function (err) {
-            if (err) throw err;
-
-            alert('The file has been uploaded successfully.');
-        });
-    });
-}
