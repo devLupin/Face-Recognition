@@ -39,21 +39,36 @@ $(function () {
         cameraSensor.height = video.videoHeight;
         cameraSensor.getContext("2d").drawImage(video, 0, 0);
         cameraOutput.src = cameraSensor.toDataURL("image/webp");
+        // cameraOutput.src = cameraSensor.toDataURL();     // PNG는 파일이 너무 커서 안됨.
         cameraOutput.classList.add("taken");
     });
 });
 
 $(function () {
     $('#store_btn').click(function () {
-        // 촬영이 안 되었을 경우, 저장버튼 안 눌리게 하는 예외 처리 필요
+        // 촬영이 안 되었을 경우, 저장버튼 안 눌리게
+        if(cameraOutput.src == 'http://:0/') {
+            alert("우선 사진을 촬영해주세요!");
+            return;
+        }
+
+        var dataURL = cameraOutput.src
 
         if (confirm("저장하시겠습니까?") == true) {
             $.ajax({
-                type: 'POST',
-                url: "./image-sender.php",
-                data: { imgBase64: cameraOutput.src }
-            }).done(function (response) {
-                console.log('saved: ' + response);
+                type:'post',   //post 방식으로 전송
+                url:'/upload_images',   //데이터를 주고받을 파일 주소
+                data: {
+                    img : dataURL,
+                    name : "test"
+                },
+                dataType:'json',   //json 파일 형식으로 값을 담아온다.
+                success : function(data){   //파일 주고받기가 성공했을 경우
+                    alert("send data !");
+                },
+                error : function(err) {     // 실패 시
+                    alert("failed : " + err);
+                }
             });
         }
         else {
