@@ -2,9 +2,13 @@
 const path = require("path");
 var express = require('express');
 var fs = require('fs');
+const https = require('https');
+
+var options = require('./openssl/config').options;
 
 // 함수 저장
 var app = express();
+const port = 16984;
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -13,15 +17,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 var publicPath = path.join(__dirname, 'public');
 app.use(express.static(publicPath));
 
-// 3000번 포트로 서버 오픈
-app.listen(3000, function () {
-    console.log("start! express server on port 3000")
-})
+const server = https.createServer({
+    key: options.key,
+    cert: options.cert,
+}, app);
+
+// 서버 오픈
+server.listen(port, () => console.log('express server running on port ' + port));
 
 // __dirname : 요청하고자 하는 파일의 경로 단축
 app.get('/', function (req, res) {
     console.log("start the camera APIs.")
-    // res.sendFile(__dirname + "/public/index.html")
     res.sendFile('public/index.html');
 })
 
@@ -50,6 +56,8 @@ var uploadPath = __dirname + '/images/';
 // Upload to server
 app.post('/upload_images', function (req, res) {
 
+    console.log("upload_images POST");
+
     var dataUrl = req.body.img;
     var userName = req.body.name;
 
@@ -63,7 +71,9 @@ app.post('/upload_images', function (req, res) {
     var buffer = new Buffer(base64_data, 'base64');
 
     fs.writeFile(user_dir + fileName + '.jpg', buffer, function (err) {
-        res.send('success');
+        if(err) throw err;
+        
+        res.status(200).json({status:"ok"})
         console.log('done');
     });
 });

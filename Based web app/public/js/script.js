@@ -47,7 +47,8 @@ $(function () {
 $(function () {
     $('#store_btn').click(function () {
         // 촬영이 안 되었을 경우, 저장버튼 안 눌리게
-        if(cameraOutput.src == 'http://:0/') {
+        // console.log('output : ' + cameraOutput.src);
+        if(cameraOutput.src == 'https://:0/') {
             alert("우선 사진을 촬영해주세요!");
             return;
         }
@@ -57,7 +58,7 @@ $(function () {
         if (confirm("저장하시겠습니까?") == true) {
             $.ajax({
                 type:'post',   //post 방식으로 전송
-                url:'/upload_images',   //데이터를 주고받을 파일 주소
+                url: '/upload_images',   //데이터를 주고받을 파일 주소
                 data: {
                     img : dataURL,
                     name : "test"
