@@ -1,5 +1,7 @@
 # ignore ssl certification dir
-openssl/*.pem
+!openssl/*.js
+openssl/
+
 
 
 # Created by https://www.gitignore.io/api/visualstudio,androidstudio,visualstudiocode
