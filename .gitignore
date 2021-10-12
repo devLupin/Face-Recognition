@@ -1,3 +1,7 @@
+# ignore ssl certification dir
+openssl/
+
+
 # Created by https://www.gitignore.io/api/visualstudio,androidstudio,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=visualstudio,androidstudio,visualstudiocode
 
