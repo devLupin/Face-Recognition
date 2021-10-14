@@ -42,10 +42,10 @@ video.addEventListener('play', () => {
 
         const curJson = resizedDetections[0];
 
-        curX = curJson.alignedRect._box._x;
-        curY = curJson.alignedRect._box._y;
-        curWidth = curJson.alignedRect._box._width;
-        curHeight = curJson.alignedRect._box._height;
+        curX = curJson.detection._box._x;
+        curY = curJson.detection._box._y;
+        curWidth = curJson.detection._box._width;
+        curHeight = curJson.detection._box._height;
 
         // console.log(curX + " " + curY + " " + curWidth + " " + curHeight);
     }, 100)
@@ -58,9 +58,9 @@ $(function () {
             return;
         }
 
-        cameraSensor.width = video.videoWidth;
-        cameraSensor.height = video.videoHeight;
-        cameraSensor.getContext("2d").drawImage(video, 0, 0);
+        cameraSensor.width = curWidth;
+        cameraSensor.height = curHeight;
+        cameraSensor.getContext("2d").drawImage(video, curX - 50, curY - 50, curWidth, curHeight, 0, 0, curWidth, curHeight);
 
         cameraOutput.src = cameraSensor.toDataURL("image/webp");
         // cameraOutput.src = cameraSensor.toDataURL();     // PNG는 파일이 너무 커서 안됨.
@@ -90,7 +90,7 @@ $(function () {
                 },
                 dataType:'json',
                 success : function(data){
-                    alert("send data !");
+                    alert("저장이 완료되었습니다 !");
                 },
                 error : function(err) {
                     alert("failed : " + err);
