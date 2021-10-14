@@ -4,6 +4,11 @@ const cameraSensor = document.getElementById("camera--sensor");
 const cameraTrigger = document.getElementById("camera--trigger")
 const savedBtn = document.getElementById('saved_btn');
 
+var curX = 0;
+var curY = 0;
+var curWidth = 0;
+var curHeight = 0;
+
 Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri('/js/models'),
     faceapi.nets.faceLandmark68Net.loadFromUri('/js/models'),
@@ -30,24 +35,44 @@ video.addEventListener('play', () => {
         canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
         faceapi.draw.drawDetections(canvas, resizedDetections)
         faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
+
+        // 얼굴이 감지되지 않음.
+        if(typeof(resizedDetections[0]) == 'undefined')
+            return;
+
+        const curJson = resizedDetections[0];
+
+        curX = curJson.alignedRect._box._x;
+        curY = curJson.alignedRect._box._y;
+        curWidth = curJson.alignedRect._box._width;
+        curHeight = curJson.alignedRect._box._height;
+
+        // console.log(curX + " " + curY + " " + curWidth + " " + curHeight);
     }, 100)
 })
 
 $(function () {
     $('#camera--trigger').click(function () {
+        if(curX == 0 && curY == 0 && curWidth == 0 && curHeight == 0){
+            alert("얼굴이 감지될 때까지 기다려주세요!");
+            return;
+        }
+
         cameraSensor.width = video.videoWidth;
         cameraSensor.height = video.videoHeight;
         cameraSensor.getContext("2d").drawImage(video, 0, 0);
+
         cameraOutput.src = cameraSensor.toDataURL("image/webp");
         // cameraOutput.src = cameraSensor.toDataURL();     // PNG는 파일이 너무 커서 안됨.
         cameraOutput.classList.add("taken");
+
+        curX = curY = curWidth = curHeight = 0; // pos init
     });
 });
 
 $(function () {
     $('#store_btn').click(function () {
         // 촬영이 안 되었을 경우, 저장버튼 안 눌리게
-        // console.log('output : ' + cameraOutput.src);
         if(cameraOutput.src == 'https://:0/') {
             alert("우선 사진을 촬영해주세요!");
             return;
@@ -57,17 +82,17 @@ $(function () {
 
         if (confirm("저장하시겠습니까?") == true) {
             $.ajax({
-                type:'post',   //post 방식으로 전송
+                type:'post',
                 url: '/upload_images',   //데이터를 주고받을 파일 주소
                 data: {
                     img : dataURL,
                     name : "test"
                 },
-                dataType:'json',   //json 파일 형식으로 값을 담아온다.
-                success : function(data){   //파일 주고받기가 성공했을 경우
+                dataType:'json',
+                success : function(data){
                     alert("send data !");
                 },
-                error : function(err) {     // 실패 시
+                error : function(err) {
                     alert("failed : " + err);
                 }
             });
