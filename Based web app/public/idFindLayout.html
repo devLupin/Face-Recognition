@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>로그인</title>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script defer src="/js/createAccountScript.js"></script>
+
+    <style>
+        body {
+            margin: 0px;
+        }
+
+        button {
+            background-color: transparent;
+            border: none;
+            color: dodgerblue;
+            font-weight: bold;
+        }
+
+        #next {
+            background-color: deepskyblue;
+            color: white;
+            font-weight: bold;
+            font-size: 20pt;
+        }
+    </style>
+</head>
+
+<body>
+    <from>
+        <table>
+            <tr>
+                <td><label>전화번호 : </label></td>
+                <td><input type="text" id="phoneNum"></td>
+            </tr>
+
+            <tr>
+                <td><label>이메일 : </label></td>
+                <td><input type="email" id="email"></td>
+            </tr>
+
+            <tr>
+                <td><button id="findPw">비밀번호를 잊으셨나요?</button></td>
+                <td><label></label></td>
+            </tr>
+
+            <td><button id="next">다음</button></td>
+            <td><label></label></td>
+        </table>
+
+    </from>
+
+</body>
+
+</html>

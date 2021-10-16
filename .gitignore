@@ -1,6 +1,7 @@
 # ignore ssl certification dir
-!openssl/*.js
-openssl/
+config/*
+!.config/ssl_config.js
+Based web app/images/*
 
 
 

@@ -3,8 +3,10 @@ const path = require("path");
 var express = require('express');
 var fs = require('fs');
 const https = require('https');
+var mysql = require('mysql');
 
-var options = require('./openssl/config').options;
+var ssl_options = require('./config/ssl_config').options;
+var db_options = require('./config/db_config').options;
 
 // 함수 저장
 var app = express();
@@ -18,9 +20,32 @@ var publicPath = path.join(__dirname, 'public');
 app.use(express.static(publicPath));
 
 const server = https.createServer({
-    key: options.key,
-    cert: options.cert,
+    key: ssl_options.key,
+    cert: ssl_options.cert,
 }, app);
+
+var conn = mysql.createConnection({
+    host: db_options.host,
+    user: db_options.user,
+    password: db_options.password,
+    database: db_options.database
+});
+
+// table create
+conn.query(db_options.CREATE, function (err, results, fields) {
+    if (err) {
+        console.log("CREATE error: " + err);
+    }
+    console.log(results);
+});
+
+//db connect
+conn.connect(function (err) {
+    if (err)
+        console.log("conn connect error: " + err);
+
+    console.log(db_options.database + " connected!");
+})
 
 // 서버 오픈
 server.listen(port, () => console.log('express server running on port ' + port));
@@ -76,4 +101,74 @@ app.post('/upload_images', function (req, res) {
         res.status(200).json({status:"ok"})
         console.log('done');
     });
+});
+
+
+
+/**
+ * DB 관련 코드
+ * 
+ */
+app.post('/find_id', function (req, res) {
+    var email = req.body.email;
+    var phnum = req.body.phnum;
+
+    var retID = "";
+
+    var queryStr =
+        db_options.SELECT_WHERE + "EMAIL=" + "'" + email + "'" + " AND PHNUM=" + "'" + phnum + "';";
+
+    conn.query(queryStr, function (err, results, fields) {
+        if (err) {
+            console.log("FIND_ID error: " + err);
+        }
+        console.log(results);
+
+        retID = ""
+    });
+
+    res.status(200).json({ id: retID })
+    console.log('find_id done');
+});
+
+
+app.post('/find_pw', function (req, res) {
+    var id = req.body.id;
+    var email = req.body.email;
+    var phnum = req.body.phnum;
+
+    var retID = "";
+    var retPW = "";
+
+    var queryStr =
+        db_options.SELECT_WHERE + "ID=" + "'" + id + "'" + " AND EMAIL=" + "'" + email + "'" + " AND PHNUM=" + "'" + phnum + "';";
+    conn.query(queryStr, function (err, results, fields) {
+        if (err) {
+            console.log("FIND_PW error: " + err);
+        }
+        console.log(results);
+
+        retID = "";
+        retPW = "";
+    });
+
+    res.status(200).json({ id: retID, pw: retPW })
+    console.log('find_pw done');
+});
+
+app.post('/login', function (req, res) {
+    var id = req.body.id;
+    var pw = req.body.pw;
+
+    var queryStr =
+        db_options.SELECT_WHERE + "ID=" + "'" + id + "'" + " AND PW=" + "'" + pw + "';";
+    conn.query(queryStr, function (err, results, fields) {
+        if (err) {
+            console.log("LOGIN error: " + err);
+        }
+        console.log(results);
+    });
+
+    res.status(200).json({status:"ok"})
+    console.log(id + ' entered.');
 });

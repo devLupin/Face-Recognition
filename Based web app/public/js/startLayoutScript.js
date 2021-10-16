@@ -1,6 +1,6 @@
 $(function () {
     $('#agree').click(function () {
-        var url = './loginLayout.html';
+        var url = '../loginLayout.html';
         $(location).attr('href', url);
     });
 });
