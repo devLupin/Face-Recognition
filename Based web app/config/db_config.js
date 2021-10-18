@@ -5,17 +5,20 @@ module.exports.options = {
     database: 'SCLAB',
 
     CREATE: "CREATE TABLE IF NOT EXISTS MEMBER (" +
-        "NAME VARCHAR(50) NOT NULL, " +
-        "ID VARCHAR(50) NOT NULL, " +
-        "PW VARCHAR(100) NOT NULL, " +
+        "NAME VARCHAR(100) NOT NULL, " +
+        "ID VARCHAR(100) NOT NULL, " +
+        "PW VARCHAR(200) NOT NULL, " +
         "PHNUM VARCHAR(100) NOT NULL, " +
         "EMAIL VARCHAR(100) NOT NULL, " +
         "PRIMARY KEY (ID), " +
-        "UNIQUE INDEX (EMAIL)" +
+        "UNIQUE INDEX (EMAIL, PHNUM)" +
         ");",
 
-    SELECT_WHERE: "SELECT * FROM MEMBER WHERE ",
-    INSERT: "INSERT INTO MEMBER VALUES",
+    SELECT_WHERE_ID: "SELECT ID FROM MEMBER WHERE ",
+    SELECT_WHERE_PW: "SELECT PW FROM MEMBER WHERE ",
+    SELECT_WHERE_LOGIN: "SELECT ID, PW FROM MEMBER WHERE ",
+
+    INSERT: "INSERT INTO MEMBER VALUES(",
 };
 
 //select 결과가 없다면 [] 이렇게 나옴

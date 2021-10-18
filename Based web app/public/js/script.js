@@ -3,6 +3,7 @@ const cameraOutput = document.getElementById("camera--output");
 const cameraSensor = document.getElementById("camera--sensor");
 const cameraTrigger = document.getElementById("camera--trigger")
 const savedBtn = document.getElementById('saved_btn');
+const usage = document.getElementById('usage');
 
 var curX = 0;
 var curY = 0;
@@ -37,7 +38,7 @@ video.addEventListener('play', () => {
         faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
 
         // 얼굴이 감지되지 않음.
-        if(typeof(resizedDetections[0]) == 'undefined')
+        if (typeof (resizedDetections[0]) == 'undefined')
             return;
 
         const curJson = resizedDetections[0];
@@ -51,9 +52,10 @@ video.addEventListener('play', () => {
     }, 100)
 })
 
+// 사진촬영
 $(function () {
     $('#camera--trigger').click(function () {
-        if(curX == 0 && curY == 0 && curWidth == 0 && curHeight == 0){
+        if (curX == 0 && curY == 0 && curWidth == 0 && curHeight == 0) {
             alert("얼굴이 감지될 때까지 기다려주세요!");
             return;
         }
@@ -70,29 +72,38 @@ $(function () {
     });
 });
 
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
 $(function () {
     $('#store_btn').click(function () {
         // 촬영이 안 되었을 경우, 저장버튼 안 눌리게
-        if(cameraOutput.src == 'https://:0/') {
+        if (cameraOutput.src == 'https://:0/') {
             alert("우선 사진을 촬영해주세요!");
             return;
         }
+
+        var userID = getParameterByName('id');
 
         var dataURL = cameraOutput.src
 
         if (confirm("저장하시겠습니까?") == true) {
             $.ajax({
-                type:'post',
+                type: 'post',
                 url: '/upload_images',   //데이터를 주고받을 파일 주소
                 data: {
-                    img : dataURL,
-                    name : "test"
+                    img: dataURL,
+                    name: userID
                 },
-                dataType:'json',
-                success : function(data){
+                dataType: 'json',
+                success: function (data) {
                     alert("저장이 완료되었습니다 !");
                 },
-                error : function(err) {
+                error: function (err) {
                     alert("failed : " + err);
                 }
             });
@@ -100,5 +111,16 @@ $(function () {
         else {
             return;
         }
+    });
+});
+
+$(function () {
+    $('#usage').click(function () {
+        var str =
+            "1. 얼굴이 감지될 때까지 기다려주세요. \n" +
+            "2. 정면을 바라보며 '사진촬영' 버튼을 클릭합니다. \n" +
+            "3. '저장' 버튼을 클릭하면 해당 영역이 서버에 저장됩니다."
+
+        alert(str);
     });
 });

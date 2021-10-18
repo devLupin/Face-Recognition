@@ -13,6 +13,7 @@ var app = express();
 const port = 16984;
 
 var bodyParser = require('body-parser');
+const { query } = require("express");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -31,28 +32,11 @@ var conn = mysql.createConnection({
     database: db_options.database
 });
 
-// table create
-conn.query(db_options.CREATE, function (err, results, fields) {
-    if (err) {
-        console.log("CREATE error: " + err);
-    }
-    console.log(results);
-});
-
-//db connect
-conn.connect(function (err) {
-    if (err)
-        console.log("conn connect error: " + err);
-
-    console.log(db_options.database + " connected!");
-})
-
 // 서버 오픈
 server.listen(port, () => console.log('express server running on port ' + port));
 
-// __dirname : 요청하고자 하는 파일의 경로 단축
 app.get('/', function (req, res) {
-    console.log("start the camera APIs.")
+    console.log("start layout !");
     res.sendFile('public/index.html');
 })
 
@@ -71,9 +55,9 @@ function getCurTime() {
 }
 
 function mkdir(dirPath) {
-    const isExists = fs.existsSync( dirPath );
-    if( !isExists ) {
-        fs.mkdirSync( dirPath, { recursive: true } );
+    const isExists = fs.existsSync(dirPath);
+    if (!isExists) {
+        fs.mkdirSync(dirPath, { recursive: true });
     }
 }
 
@@ -96,10 +80,10 @@ app.post('/upload_images', function (req, res) {
     var buffer = new Buffer(base64_data, 'base64');
 
     fs.writeFile(user_dir + fileName + '.jpg', buffer, function (err) {
-        if(err) throw err;
-        
-        res.status(200).json({status:"ok"})
-        console.log('done');
+        if (err) throw err;
+
+        res.status(200).json({ status: "ok" })
+        console.log("[saved image] id: " + userName);
     });
 });
 
@@ -109,26 +93,77 @@ app.post('/upload_images', function (req, res) {
  * DB 관련 코드
  * 
  */
+
+//db connect
+conn.connect(function (err) {
+    if (err)
+        console.log("conn connect error: " + err);
+
+    console.log(db_options.database + " connected!");
+})
+
+// table create
+conn.query(db_options.CREATE, function (err, results, fields) {
+    if (err) {
+        console.log("CREATE error: " + err);
+    }
+    console.log("CREATE TABLE MEMBER");
+});
+
+// 회원가입
+app.post('/createAccount', function (req, res) {
+    var id = req.body.id;
+    var pw = req.body.pw;
+    var name = req.body.name;
+    var email = req.body.email;
+    var phnum = req.body.phnum;
+
+    var queryStr =
+        db_options.INSERT +
+        "'" + name + "'," +
+        "'" + id + "'," +
+        "'" + pw + "'," +
+        "'" + phnum + "'," +
+        "'" + email + "'" +
+        ");";
+
+    conn.query(queryStr, function (err, results) {
+        if (err) {
+            if (err.code == 'ER_DUP_ENTRY') {
+                res.status(200).json({ status: "duplicated" })
+            }
+            else {
+                console.log("create err: " + err);
+                res.status(404).json({ status: "fatal error" })
+            }
+        }
+
+        else {
+            res.status(200).json({ status: "ok" })
+            console.log("[new member] id: " + id);
+        }
+    });
+});
+
 app.post('/find_id', function (req, res) {
     var email = req.body.email;
     var phnum = req.body.phnum;
 
-    var retID = "";
-
     var queryStr =
-        db_options.SELECT_WHERE + "EMAIL=" + "'" + email + "'" + " AND PHNUM=" + "'" + phnum + "';";
+        db_options.SELECT_WHERE_ID + "EMAIL=" + "'" + email + "'" + " AND PHNUM=" + "'" + phnum + "';";
 
     conn.query(queryStr, function (err, results, fields) {
         if (err) {
             console.log("FIND_ID error: " + err);
         }
-        console.log(results);
 
-        retID = ""
+        if (results.length > 0) {
+            res.status(200).json({ ret: results[0].ID })
+        }
+        else {
+            res.status(200).json({ ret: "not exist" })
+        }
     });
-
-    res.status(200).json({ id: retID })
-    console.log('find_id done');
 });
 
 
@@ -137,23 +172,24 @@ app.post('/find_pw', function (req, res) {
     var email = req.body.email;
     var phnum = req.body.phnum;
 
-    var retID = "";
-    var retPW = "";
-
     var queryStr =
-        db_options.SELECT_WHERE + "ID=" + "'" + id + "'" + " AND EMAIL=" + "'" + email + "'" + " AND PHNUM=" + "'" + phnum + "';";
+        db_options.SELECT_WHERE_PW +
+        "ID=" + "'" + id + "'" + " AND " +
+        "EMAIL=" + "'" + email + "'" + " AND " +
+        "PHNUM=" + "'" + phnum + "';";
+
     conn.query(queryStr, function (err, results, fields) {
         if (err) {
             console.log("FIND_PW error: " + err);
         }
-        console.log(results);
 
-        retID = "";
-        retPW = "";
+        if (results.length > 0) {
+            res.status(200).json({ ret: results[0].PW })
+        }
+        else {
+            res.status(200).json({ ret: "not exist" })
+        }
     });
-
-    res.status(200).json({ id: retID, pw: retPW })
-    console.log('find_pw done');
 });
 
 app.post('/login', function (req, res) {
@@ -161,14 +197,21 @@ app.post('/login', function (req, res) {
     var pw = req.body.pw;
 
     var queryStr =
-        db_options.SELECT_WHERE + "ID=" + "'" + id + "'" + " AND PW=" + "'" + pw + "';";
+        db_options.SELECT_WHERE_LOGIN +
+        "ID=" + "'" + id + "'" + " AND " +
+        "PW=" + "'" + pw + "';";
+
     conn.query(queryStr, function (err, results, fields) {
         if (err) {
             console.log("LOGIN error: " + err);
         }
-        console.log(results);
-    });
 
-    res.status(200).json({status:"ok"})
-    console.log(id + ' entered.');
+        if (results.length > 0) {
+            res.status(200).json({ ret: "OK" })
+            console.log("[login member] id: " + id);
+        }
+        else {
+            res.status(200).json({ ret: "not exist" })
+        }
+    });
 });
