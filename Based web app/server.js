@@ -215,3 +215,24 @@ app.post('/login', function (req, res) {
         }
     });
 });
+
+app.post('/check', function (req, res) {
+    var id = req.body.id;
+
+    var queryStr =
+        db_options.SELECT_WHERE_LOGIN +
+        "ID=" + "'" + id + "';";
+
+    conn.query(queryStr, function (err, results, fields) {
+        if (err) {
+            console.log("LOGIN error: " + err);
+        }
+
+        if (results.length > 0) {
+            res.status(200).json({ ret: "OK" })
+        }
+        else {
+            res.status(200).json({ ret: "not exist" })
+        }
+    });
+});

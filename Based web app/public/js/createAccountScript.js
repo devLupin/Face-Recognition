@@ -9,6 +9,7 @@ function isNumber(s) {
     return true;
 }
 
+const MAX_LEN = 500;
 $(function () {
     $('#submit').click(function () {
         var curID, curPW, curPWConfirm, curName, curPhNum, curEmail;
@@ -38,6 +39,12 @@ $(function () {
             alert("올바르지 않은 이메일 형식입니다. \n 입력 예시) web@server.com")
             return;
         }
+
+        if(curID.length > MAX_LEN || curPW.length > MAX_LEN || 
+            curName.length > MAX_LEN || curPhNum.length > MAX_LEN || curEmail.length > MAX_LEN) {
+                alert("모든 영역은 500자를 넘을 수 없습니다.");
+                return;
+            }
 
         if (confirm(
             "제출하시겠습니까?\n\n" +

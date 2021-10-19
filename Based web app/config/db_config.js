@@ -5,11 +5,11 @@ module.exports.options = {
     database: 'SCLAB',
 
     CREATE: "CREATE TABLE IF NOT EXISTS MEMBER (" +
-        "NAME VARCHAR(100) NOT NULL, " +
-        "ID VARCHAR(100) NOT NULL, " +
-        "PW VARCHAR(200) NOT NULL, " +
-        "PHNUM VARCHAR(100) NOT NULL, " +
-        "EMAIL VARCHAR(100) NOT NULL, " +
+        "NAME VARCHAR(500) NOT NULL, " +
+        "ID VARCHAR(500) NOT NULL, " +
+        "PW VARCHAR(500) NOT NULL, " +
+        "PHNUM VARCHAR(500) NOT NULL, " +
+        "EMAIL VARCHAR(500) NOT NULL, " +
         "PRIMARY KEY (ID), " +
         "UNIQUE INDEX (EMAIL, PHNUM)" +
         ");",

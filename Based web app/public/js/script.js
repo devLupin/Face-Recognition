@@ -10,6 +10,8 @@ var curY = 0;
 var curWidth = 0;
 var curHeight = 0;
 
+var userID = "";
+
 Promise.all([
     faceapi.nets.tinyFaceDetector.loadFromUri('/js/models'),
     faceapi.nets.faceLandmark68Net.loadFromUri('/js/models'),
@@ -20,8 +22,17 @@ Promise.all([
 function startVideo() {
     navigator.getUserMedia(
         { video: {} },
-        stream => video.srcObject = stream,
-        err => console.error(err)
+        function (stream) {
+            video.srcObject = stream
+        },
+        function (err) {
+            if (String(err) == 'NotAllowedError: Permission denied')
+                alert('카메라 권한을 허용해주세요.');
+            else if (String(err) == 'DOMException: Requested device not found')
+                alert('연결된 카메라가 없습니다.');
+            else
+                alert('Camera open fatal error');
+        }
     )
 }
 
@@ -38,8 +49,11 @@ video.addEventListener('play', () => {
         faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
 
         // 얼굴이 감지되지 않음.
-        if (typeof (resizedDetections[0]) == 'undefined')
+        if (typeof (resizedDetections[0]) == 'undefined') {
+            // 좌표가 저장된 상태이므로 초기화 시켜줘야 함.
+            curX = curY = curWidth = curHeight = 0;
             return;
+        }
 
         const curJson = resizedDetections[0];
 
@@ -87,8 +101,6 @@ $(function () {
             return;
         }
 
-        var userID = getParameterByName('id');
-
         var dataURL = cameraOutput.src
 
         if (confirm("저장하시겠습니까?") == true) {
@@ -122,5 +134,33 @@ $(function () {
             "3. '저장' 버튼을 클릭하면 해당 영역이 서버에 저장됩니다."
 
         alert(str);
+    });
+});
+
+$(document).ready(function () {
+    userID = getParameterByName('id');
+
+    $.ajax({
+        type: 'post',
+        url: '/check',   //데이터를 주고받을 파일 주소
+        data: {
+            id: userID
+        },
+        dataType: 'json',
+
+        // 로그인 성공 시 촬영 레이아웃으로 이동
+        success: function (data) {
+            if (data.ret == 'OK') {
+            }
+            else {
+                alert('유효하지 않은 링크입니다.');
+
+                var url = '../loginLayout.html';
+                $(location).attr('href', url);
+            }
+        },
+        error: function (err) {
+            alert('LOGIN fatal error');
+        }
     });
 });
