@@ -28,10 +28,10 @@ function startVideo() {
         function (err) {
             if (String(err) == 'NotAllowedError: Permission denied')
                 alert('카메라 권한을 허용해주세요.');
-            else if (String(err) == 'DOMException: Requested device not found')
+            else if (String(err) == 'NotFoundError: Requested device not found')
                 alert('연결된 카메라가 없습니다.');
             else
-                alert('Camera open fatal error');
+                console.log(String(err));
         }
     )
 }

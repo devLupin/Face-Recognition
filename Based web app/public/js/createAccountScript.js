@@ -9,7 +9,7 @@ function isNumber(s) {
     return true;
 }
 
-const MAX_LEN = 500;
+const MAX_LEN = 200;
 $(function () {
     $('#submit').click(function () {
         var curID, curPW, curPWConfirm, curName, curPhNum, curEmail;
@@ -42,7 +42,7 @@ $(function () {
 
         if(curID.length > MAX_LEN || curPW.length > MAX_LEN || 
             curName.length > MAX_LEN || curPhNum.length > MAX_LEN || curEmail.length > MAX_LEN) {
-                alert("모든 영역은 500자를 넘을 수 없습니다.");
+                alert("모든 영역은 200자를 넘을 수 없습니다.");
                 return;
             }
 
