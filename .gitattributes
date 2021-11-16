@@ -1,6 +1,11 @@
 *.cpp linguist-detectable=false
 *.hpp linguist-detectable=false
 *.h linguist-detectable=false
+
 *.java linguist-detectable=false
+
 *.cmake linguist-detectable=false
+*.mk linguist-detectable=false
 *.txt linguist-detectable=false
+
+*.cs linguist-detectable=false
