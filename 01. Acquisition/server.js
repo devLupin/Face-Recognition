@@ -99,7 +99,9 @@ conn.connect(function (err) {
     if (err)
         console.log("conn connect error: " + err);
 
-    console.log(db_options.database + " connected!");
+    else {
+        console.log(db_options.database + " connected!");
+    }
 })
 
 // table create
@@ -107,8 +109,21 @@ conn.query(db_options.CREATE, function (err, results, fields) {
     if (err) {
         console.log("CREATE error: " + err);
     }
-    console.log("CREATE TABLE MEMBER");
+    else {
+        console.log("CREATE TABLE MEMBER");
+    }
 });
+
+// ALTER
+conn.query(db_options.ALTER, function (err, results, fields) {
+    if (err) {
+        console.log("ALTER error: " + err);
+    }
+    else {
+        console.log("ALTER TABLE MEMBER");
+    }
+});
+
 
 // 회원가입
 app.post('/createAccount', function (req, res) {
