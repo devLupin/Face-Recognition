@@ -1,7 +1,7 @@
 # ignore ssl certification dir
 config/*
 !.config/ssl_config.js
-Based web app/images/*
+01. Acquisition/images/*
 
 
 
