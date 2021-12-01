@@ -1,5 +1,0 @@
-[68-points detector]
-Adrian Bulat and Georgios Tzimiropoulos. How far are we
-from solving the 2d & 3d face alignment problem? (and a
-dataset of 230,000 3d facial landmarks). In International
-Conference on Computer Vision, 2017.
