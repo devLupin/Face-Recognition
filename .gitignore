@@ -2,6 +2,9 @@
 config/*
 !.config/ssl_config.js
 01. Acquisition/images/*
+02. Recognition/train/*
+02. Recognition/test/*
+02. Recognition/val/*
 
 
 
