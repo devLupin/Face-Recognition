@@ -7,23 +7,17 @@ from tqdm import tqdm
 from utils import log
 
 # Get a reference to webcam #0 (the default one)
-# CAP_DSHOW : 카메라 영상이 화면에 바로 나타나도록
+# CAP_DSHOW : ignore error
 video_capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
 cfg = configurations[1]
 train_path = cfg['TRAIN_DATA']
-# test_path = cfg['TEST_DATA']
-# val_path = cfg['VAL_DATA']
 
 allFolders = os.listdir(train_path)
 
 num_of_train_images = len(os.listdir(os.path.join(train_path, allFolders[0])))
 train_encodings = []
 train_names = []
-# num_of_test_images = len(os.listdir(os.path.join(test_path, allFolders[0])))
-# test_encodings = []
-# num_of_val_images = len(os.listdir(os.path.join(val_path, allFolders[0])))
-# val_encodings = []
 
 log(msg = 'All identity encodings....')
 for id in allFolders:
@@ -40,13 +34,14 @@ for id in allFolders:
         
     train_encodings.append(temp)
 
-print(train_names)
 
 # Initialize some variables
 face_locations = []
 face_encodings = []
 face_names = []
 process_this_frame = True
+
+threshold = cfg['THRESHOLD']
 
 while True:
     # Grab a single frame of video
@@ -63,30 +58,30 @@ while True:
         # Find all the faces and face encodings in the current frame of video
         face_locations = fr.face_locations(rgb_small_frame)
         face_encodings = fr.face_encodings(rgb_small_frame, face_locations)
-
-        face_names = []
-        for face_encoding in face_encodings:
-            # See if the face is a match for the known face(s)
-            matches = fr.compare_faces(train_encodings, face_encoding)
-            name = "Unknown"
-
-            # # If a match was found in known_face_encodings, just use the first one.
-            # if True in matches:
-            #     first_match_index = matches.index(True)
-            #     name = known_face_names[first_match_index]
-
-            # Or instead, use the known face with the smallest distance to the new face
-            face_distances = fr.face_distance(train_encodings, face_encoding)
-            best_match_index = np.argmin(face_distances)
-            print(best_match_index)
-            if matches[best_match_index]:
-                name = train_names[best_match_index]
-
-            face_names.append(name)
+        
+        for id in range(len(train_names)):
+            for images in train_encodings[id]:
+                face_names = []
+                for face_encoding in face_encodings:
+                    # See if the face is a match for the known face(s)
+                    matches = fr.compare_faces(images, face_encoding)
+                    name = "Unknown"
+                    
+                    face_distances = fr.face_distance(images, face_encoding)
+                    print(face_distances)
+                    
+                    if(face_distances > threshold):
+                        continue
+                    
+                    best_match_index = np.argmin(face_distances)
+                    
+                    if matches[best_match_index]:
+                        name = str(train_names[id])
+                    
+                    face_names.append(name)
 
     process_this_frame = not process_this_frame
-
-
+    
     # Display the results
     for (top, right, bottom, left), name in zip(face_locations, face_names):
         # Scale back up face locations since the frame we detected in was scaled to 1/4 size
