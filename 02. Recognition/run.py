@@ -59,6 +59,8 @@ while True:
         face_locations = fr.face_locations(rgb_small_frame)
         face_encodings = fr.face_encodings(rgb_small_frame, face_locations)
         
+        face_distances = []
+        
         for id in range(len(train_names)):
             for images in train_encodings[id]:
                 face_names = []
@@ -68,10 +70,11 @@ while True:
                     name = "Unknown"
                     
                     face_distances = fr.face_distance(images, face_encoding)
-                    print(face_distances)
                     
                     if(face_distances > threshold):
                         continue
+                    
+                    print(f'id : {train_names[id]}, distance : {face_distances}')
                     
                     best_match_index = np.argmin(face_distances)
                     

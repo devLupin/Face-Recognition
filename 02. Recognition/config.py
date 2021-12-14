@@ -8,6 +8,6 @@ configurations = {
         TEST_DATA = os.path.join(ROOT, 'test'),
         VAL_DATA = os.path.join(ROOT, 'val'),
         
-        THRESHOLD = 0.4
+        THRESHOLD = 0.3
 ),
 }
