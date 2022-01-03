@@ -2,9 +2,9 @@
 config/*
 !.config/ssl_config.js
 01. Acquisition/images/*
-02. Recognition/train/*
-02. Recognition/test/*
-02. Recognition/val/*
+02. Recognition\04. based MobileNet2/checkpoint/*
+02. Recognition\04. based MobileNet2/faces/*
+02. Recognition\04. based MobileNet2/Model/*
 
 
 

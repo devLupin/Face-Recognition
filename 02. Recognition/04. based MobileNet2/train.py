@@ -1,140 +1,13 @@
 #%%
-import os
-import cv2
-import dlib
-import numpy as np
-from imutils import face_utils
-import tensorflow as tf
-import pickle
-import onnx
-import onnxruntime as ort
-from onnx_tf.backend import prepare
-
 from config import configurations
-from tqdm import tqdm
 
-#%%
-def area_of(left_top, right_bottom):
-    """
-    Compute the areas of rectangles given two corners.
-    Args:
-        left_top (N, 2): left top corner.
-        right_bottom (N, 2): right bottom corner.
-    Returns:
-        area (N): return the area.
-    """
-    hw = np.clip(right_bottom - left_top, 0.0, None)
-    return hw[..., 0] * hw[..., 1]
-
-def iou_of(boxes0, boxes1, eps=1e-5):
-    """
-    Return intersection-over-union (Jaccard index) of boxes.
-    Args:
-        boxes0 (N, 4): ground truth boxes.
-        boxes1 (N or 1, 4): predicted boxes.
-        eps: a small number to avoid 0 as denominator.
-    Returns:
-        iou (N): IoU values.
-    """
-    overlap_left_top = np.maximum(boxes0[..., :2], boxes1[..., :2])
-    overlap_right_bottom = np.minimum(boxes0[..., 2:], boxes1[..., 2:])
-
-    overlap_area = area_of(overlap_left_top, overlap_right_bottom)
-    area0 = area_of(boxes0[..., :2], boxes0[..., 2:])
-    area1 = area_of(boxes1[..., :2], boxes1[..., 2:])
-    return overlap_area / (area0 + area1 - overlap_area + eps)
-
-def hard_nms(box_scores, iou_threshold, top_k=-1, candidate_size=200):
-    """
-    Perform hard non-maximum-supression to filter out boxes with iou greater
-    than threshold
-    Args:
-        box_scores (N, 5): boxes in corner-form and probabilities.
-        iou_threshold: intersection over union threshold.
-        top_k: keep top_k results. If k <= 0, keep all the results.
-        candidate_size: only consider the candidates with the highest scores.
-    Returns:
-        picked: a list of indexes of the kept boxes
-    """
-    scores = box_scores[:, -1]
-    boxes = box_scores[:, :-1]
-    picked = []
-    indexes = np.argsort(scores)
-    indexes = indexes[-candidate_size:]
-    while len(indexes) > 0:
-        current = indexes[-1]
-        picked.append(current)
-        if 0 < top_k == len(picked) or len(indexes) == 1:
-            break
-        current_box = boxes[current, :]
-        indexes = indexes[:-1]
-        rest_boxes = boxes[indexes, :]
-        iou = iou_of(
-            rest_boxes,
-            np.expand_dims(current_box, axis=0),
-        )
-        indexes = indexes[iou <= iou_threshold]
-
-    return box_scores[picked, :]
-
-def predict(width, height, confidences, boxes, prob_threshold, iou_threshold=0.5, top_k=-1):
-    """
-    Select boxes that contain human faces
-    Args:
-        width: original image width
-        height: original image height
-        confidences (N, 2): confidence array
-        boxes (N, 4): boxes array in corner-form
-        iou_threshold: intersection over union threshold.
-        top_k: keep top_k results. If k <= 0, keep all the results.
-    Returns:
-        boxes (k, 4): an array of boxes kept
-        labels (k): an array of labels for each boxes kept
-        probs (k): an array of probabilities for each boxes being in corresponding labels
-    """
-    boxes = boxes[0]
-    confidences = confidences[0]
-    picked_box_probs = []
-    picked_labels = []
-    for class_index in range(1, confidences.shape[1]):
-        probs = confidences[:, class_index]
-        mask = probs > prob_threshold
-        probs = probs[mask]
-        if probs.shape[0] == 0:
-            continue
-        subset_boxes = boxes[mask, :]
-        box_probs = np.concatenate([subset_boxes, probs.reshape(-1, 1)], axis=1)
-        box_probs = hard_nms(box_probs,
-           iou_threshold=iou_threshold,
-           top_k=top_k,
-           )
-        picked_box_probs.append(box_probs)
-        picked_labels.extend([class_index] * box_probs.shape[0])
-    if not picked_box_probs:
-        return np.array([]), np.array([]), np.array([])
-    picked_box_probs = np.concatenate(picked_box_probs)
-    picked_box_probs[:, 0] *= width
-    picked_box_probs[:, 1] *= height
-    picked_box_probs[:, 2] *= width
-    picked_box_probs[:, 3] *= height
-    return picked_box_probs[:, :4].astype(np.int32), np.array(picked_labels), picked_box_probs[:, 4]
-
-
-#%%
 cfg = configurations[1]
-TRAINING = cfg['DATA_PATH']
-ONNX_PATH = cfg['ONNX_PATH']
-LANDMARK_PATH = cfg['LANDMARK_PATH']
-EMBEDDING_PKL = cfg['EMBEDDING_PKL']
-
-onnx_model = onnx.load(ONNX_PATH)
-predictor = prepare(onnx_model)
-ort_session = ort.InferenceSession(ONNX_PATH)
-input_name = ort_session.get_inputs()[0].name
-
-# for facial landmark prediction
-shape_predictor = dlib.shape_predictor(LANDMARK_PATH)
-fa = face_utils.facealigner.FaceAligner(shape_predictor, desiredFaceWidth=112, desiredLeftEye=(0.3, 0.3))
+TRAIN = cfg['TRAIN_PATH']
+VAL = cfg['VAL_PATH']
+TARGET_SIZE = cfg['TARGET_SIZE']
+BATCH_SIZE = cfg['BATCH_SIZE']
+EPOCHS = cfg['EPOCHS']
+INPUT_SHAPE = cfg['INPUT_SHAPE']
 
 print("=" * 60)
 print("Overall Configurations:")
@@ -142,79 +15,110 @@ print(cfg)
 print("=" * 60)
 
 #%%
-dirs = os.listdir(TRAINING)
-images = []
-names = []
+# Data preparing
 
+import os
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+classes = os.listdir(TRAIN)
+
+train_image_generator = ImageDataGenerator(rescale=1./255) # Generator for our training data
+val_image_generator = ImageDataGenerator(rescale=1./255)
+
+train_data_gen = train_image_generator.flow_from_directory(batch_size=BATCH_SIZE,
+                                                           directory=TRAIN,
+                                                           shuffle=True,
+                                                           target_size=TARGET_SIZE,
+                                                           class_mode='categorical')
+val_data_gen = val_image_generator.flow_from_directory(batch_size=BATCH_SIZE,
+                                                       directory=VAL,
+                                                       shuffle=True,
+                                                       target_size=TARGET_SIZE,
+                                                       class_mode='categorical')
+
+print(len(train_data_gen.class_indices))
+# %%
+# Image displaying
+
+sample_training_images, _ = next(train_data_gen)
+# %%
+import matplotlib.pyplot as plt
+
+def plot_images(img_arr):
+    fig, axes = plt.subplots(1, 5, figsize=(20,20))
+    axes = axes.flatten()
+    
+    for img, ax in zip(img_arr, axes):
+        ax.imshow(img)
+        ax.axis('off')
+    
+    plt.tight_layout()
+    plt.show()
+
+plot_images(sample_training_images[:5])
+# %%
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
+from tensorflow.keras.optimizers import Adam, SGD
+
+from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
+# %%
+model = Sequential()
+model.add(MobileNetV2(input_shape=INPUT_SHAPE,
+                    include_top=False,
+                    weights='imagenet'))
+model.add(GlobalAveragePooling2D())
+model.add(Dense(512, activation='relu'))
+model.add(Dense(400, activation='softmax'))
 #%%
-for label in tqdm(dirs, desc='Collecting faces'):
-    for i, fn in enumerate(os.listdir(os.path.join(TRAINING, label))):
-        # print(f"start collecting faces from {label}'s data")
-        cap = cv2.VideoCapture(os.path.join(TRAINING, label, fn))
-        frame_count = 0
-        while True:
-            # read video frame
-            ret, raw_img = cap.read()
-            # process every 5 frames
-            if frame_count % 5 == 0 and raw_img is not None:
-                h, w, _ = raw_img.shape
-                img = cv2.cvtColor(raw_img, cv2.COLOR_BGR2RGB)
-                img = cv2.resize(img, (640, 480))
-                img_mean = np.array([127, 127, 127])
-                img = (img - img_mean) / 128
-                img = np.transpose(img, [2, 0, 1])
-                img = np.expand_dims(img, axis=0)
-                img = img.astype(np.float32)
+model.compile(optimizer=SGD(learning_rate=0.001, momentum=0.85),
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+# %%
+model.summary()
+# %%
+from tensorflow.keras.utils import plot_model
+plot_model(model, show_shapes=True)
 
-                confidences, boxes = ort_session.run(None, {input_name: img})
-                boxes, labels, probs = predict(w, h, confidences, boxes, 0.7)
+# %%
+import tensorflow_addons as tfa
 
-                # if face detected
-                if boxes.shape[0] > 0:
-                    x1, y1, x2, y2 = boxes[0,:]
-                    gray = cv2.cvtColor(raw_img, cv2.COLOR_BGR2GRAY)
-                    aligned_face = fa.align(raw_img, gray, dlib.rectangle(left = x1, top=y1, right=x2, bottom=y2))
-                    aligned_face = cv2.resize(aligned_face, (112,112))
+stop = EarlyStopping(patience=5)
+checkpoint = ModelCheckpoint("checkpoint/cp.ckpt",monitor='val_accuracy',
+                            save_weights_only=True, mode='max',verbose=1,save_best_only=True)
+tqdm_callback = tfa.callbacks.TQDMProgressBar()
+# callbacks = [stop, checkpoint, tqdm_callback]
+callbacks = [checkpoint]
+# %%
+history = model.fit(train_data_gen,
+                    validation_data = val_data_gen,
+                    steps_per_epoch=int(3600/BATCH_SIZE),
+                    callbacks=callbacks,
+                    epochs=EPOCHS)
+# %%
+history.history.keys()
+# %%
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
+loss = history.history['loss']
+val_loss = history.history['val_loss']
 
-                    cv2.imwrite(f'faces/tmp/{label}_{frame_count}.jpg', aligned_face)
+epochs = range(len(acc))
 
-                    aligned_face = aligned_face - 127.5
-                    aligned_face = aligned_face * 0.0078125
-                    images.append(aligned_face)
-                    names.append(label)
+plt.plot(epochs, acc, 'r', label='Training acc')
+plt.plot(epochs, val_acc, 'b', label='Validation acc')
+plt.title('Training and validation accuracy')
+plt.legend()
 
-            frame_count += 1
-            if frame_count == cap.get(cv2.CAP_PROP_FRAME_COUNT):
-                break
+plt.figure()
 
+plt.plot(epochs, loss, 'r', label='Training loss')
+plt.plot(epochs, val_loss, 'b', label='Validation loss')
+plt.title('Training and validation loss')
+plt.legend()
 
-#%%
-"""
-Meta graph
-    - Tensorflow graph 저장
-    - all variables, operations, collections 등
-    - .meta를 확장자로 가짐. 
-
-Checkpoint file
-    - binary 파일로 weights, biases, gradients 등을 저장 한다.
-    - 0.11부터는 두개의 파일로 저장된다
-        - model.ckpt.data-00000-of-00001
-        - model.ckpt.index
-"""
-with tf.Graph().as_default():
-    with tf.Session() as sess:
-        print("loading checkpoint ...")
-        
-        saver = tf.train.import_meta_graph('models/mfn/m1/mfn.ckpt.meta')   # load meta file
-        saver.restore(sess, 'models/mfn/m1/mfn.ckpt')
-
-        images_placeholder = tf.get_default_graph().get_tensor_by_name("input:0")
-        embeddings = tf.get_default_graph().get_tensor_by_name("embeddings:0")
-        phase_train_placeholder = tf.get_default_graph().get_tensor_by_name("phase_train:0")
-
-        feed_dict = { images_placeholder: images, phase_train_placeholder:False }
-        embeds = sess.run(embeddings, feed_dict=feed_dict)
-        with open(EMBEDDING_PKL, "wb") as f:
-            pickle.dump((embeds, names), f)
-        print("Done!")
+plt.show()
+# %%
+model.save('Model')
 # %%
