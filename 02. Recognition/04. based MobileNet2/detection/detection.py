@@ -1,8 +1,11 @@
 import cv2
+from datetime import datetime
 import numpy as np
 import onnx
 import onnxruntime as ort
-from onnx_tf.backend import prepare
+import os
+
+MAX = 10
 
 def area_of(left_top, right_bottom):
     """
@@ -15,6 +18,7 @@ def area_of(left_top, right_bottom):
     """
     hw = np.clip(right_bottom - left_top, 0.0, None)
     return hw[..., 0] * hw[..., 1]
+
 
 def iou_of(boxes0, boxes1, eps=1e-5):
     """
@@ -33,6 +37,7 @@ def iou_of(boxes0, boxes1, eps=1e-5):
     area0 = area_of(boxes0[..., :2], boxes0[..., 2:])
     area1 = area_of(boxes1[..., :2], boxes1[..., 2:])
     return overlap_area / (area0 + area1 - overlap_area + eps)
+
 
 def hard_nms(box_scores, iou_threshold, top_k=-1, candidate_size=200):
     """
@@ -67,6 +72,7 @@ def hard_nms(box_scores, iou_threshold, top_k=-1, candidate_size=200):
 
     return box_scores[picked, :]
 
+
 def predict(width, height, confidences, boxes, prob_threshold, iou_threshold=0.5, top_k=-1):
     """
     Select boxes that contain human faces
@@ -93,11 +99,12 @@ def predict(width, height, confidences, boxes, prob_threshold, iou_threshold=0.5
         if probs.shape[0] == 0:
             continue
         subset_boxes = boxes[mask, :]
-        box_probs = np.concatenate([subset_boxes, probs.reshape(-1, 1)], axis=1)
+        box_probs = np.concatenate(
+            [subset_boxes, probs.reshape(-1, 1)], axis=1)
         box_probs = hard_nms(box_probs,
-           iou_threshold=iou_threshold,
-           top_k=top_k,
-           )
+                             iou_threshold=iou_threshold,
+                             top_k=top_k,
+                             )
         picked_box_probs.append(box_probs)
         picked_labels.extend([class_index] * box_probs.shape[0])
     if not picked_box_probs:
@@ -109,41 +116,88 @@ def predict(width, height, confidences, boxes, prob_threshold, iou_threshold=0.5
     picked_box_probs[:, 3] *= height
     return picked_box_probs[:, :4].astype(np.int32), np.array(picked_labels), picked_box_probs[:, 4]
 
-video_capture = cv2.VideoCapture(0)
 
-onnx_path = 'model/ultra_light_640.onnx'
-onnx_model = onnx.load(onnx_path)
-predictor = prepare(onnx_model)
-ort_session = ort.InferenceSession(onnx_path)
-input_name = ort_session.get_inputs()[0].name
+def get_file_path():
+    now = datetime.now()
+    file_name = (str(now.year)+str(now.month)+str(now.day)+
+                 '_'+
+                 str(now.hour)+str(now.minute)+str(now.second))
+    return os.path.join('./data', file_name + '.jpg')
 
-while True:
-    ret, frame = video_capture.read()
-    if frame is not None:
-        h, w, _ = frame.shape
-        # preprocess img acquired
-        img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) # convert bgr to rgb
-        img = cv2.resize(img, (640, 480)) # resize
-        img_mean = np.array([127, 127, 127])
-        img = (img - img_mean) / 128
-        img = np.transpose(img, [2, 0, 1])
-        img = np.expand_dims(img, axis=0)
-        img = img.astype(np.float32)
 
-        confidences, boxes = ort_session.run(None, {input_name: img})
-        boxes, labels, probs = predict(w, h, confidences, boxes, 0.7)
+def main(ort_session, input_name):
+    video_capture = cv2.VideoCapture(0)
 
-        for i in range(boxes.shape[0]):
-            box = boxes[i, :]
-            x1, y1, x2, y2 = box
-            roi = frame[y1:y1+y2, x1:x2]    # roi
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0,255,0), 2)
+    cur_x, cur_y, cur_width, cur_height = 0, 0, 0, 0
+    prev_x, prev_y, prev_width, prev_height = 0, 0, 0, 0
+    sec = 0
 
-        cv2.imshow('Video', frame)
+    while True:
+        ret, frame = video_capture.read()
+
+        if frame is not None:
+            h, w, _ = frame.shape
+            # preprocess img acquired
+            img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)  # convert bgr to rgb
+            img = cv2.resize(img, (640, 480))  # resize
+            img_mean = np.array([127, 127, 127])
+            img = (img - img_mean) / 128
+            img = np.transpose(img, [2, 0, 1])
+            img = np.expand_dims(img, axis=0)
+            img = img.astype(np.float32)
+
+            confidences, boxes = ort_session.run(None, {input_name: img})
+            boxes, labels, probs = predict(w, h, confidences, boxes, 0.7)
+
+            num_of_person = boxes.shape[0]
+
+            if(num_of_person == 1):
+                if(probs[0] < 0.989):
+                    continue
+
+                box = boxes[0, :]
+                x1, y1, x2, y2 = box
+
+                if(sec == 10):
+                    cur_x, cur_y, cur_width, cur_height = x1, y1, x2, y2
+
+                if(sec == 30):
+                    prev_x, prev_y, prev_width, prev_height = x1, y1, x2, y2
+
+                    if(abs(cur_x - prev_x) < MAX and
+                       abs(cur_y - prev_y) < MAX and
+                       abs(cur_width - prev_width) < MAX and
+                       abs(cur_height - prev_height) < MAX):
+                        print('capture')
+
+                        roi = frame[y1:y1+y2, x1:x2]    # roi
+                        resized = cv2.resize(roi, (224, 224))   # for MobileNetV2
+                        cv2.imwrite(get_file_path(), resized)   # save temp image
+                        
+                        """
+                        통신해서 인식 프로그램에 이미지 전달해야 함.
+                        파일 경로 전달하면 될듯
+                        """
+
+                    sec = 0
+
+                cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 4)
+
+                sec += 1
+
+            cv2.imshow('Video', frame)
+
         # Hit 'q' on the keyboard to quit!
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
-# Release handle to the webcam
-video_capture.release()
-cv2.destroyAllWindows()
+    # Release handle to the webcam
+    video_capture.release()
+    cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    onnx_path = 'model/ultra_light_640.onnx'
+    onnx_model = onnx.load(onnx_path)
+    ort_session = ort.InferenceSession(onnx_path)
+    main(ort_session, ort_session.get_inputs()[0].name)
