@@ -82,17 +82,6 @@ plt.show()
 
 # %%
 print(norcm.shape)
-# %%
 print(accuracy_score(y_true=y_test, y_pred=y_pred))
 
-
-# %%
-result = model.predict(pred('19062621.jpg', TARGET_SIZE))
-labels = os.listdir(TEST)
-y_pred = np.argmax(result)
-print(result[0][y_pred])
-print()
-print(labels[np.argmax(result)])
-# y_pred.append(np.argmax(result))
-# y_test.append(train_class[label])
 # %%

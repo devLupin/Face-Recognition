@@ -1,5 +1,4 @@
 import cv2
-from datetime import datetime
 import numpy as np
 import onnx
 import onnxruntime as ort
@@ -236,7 +235,7 @@ def main(ort_session, input_name):
 
 
 if __name__ == "__main__":
-    onnx_path = 'detection/ultra_light_640.onnx'
+    onnx_path = 'ultra_light_640.onnx'
     onnx_model = onnx.load(onnx_path)
     ort_session = ort.InferenceSession(onnx_path)
 
