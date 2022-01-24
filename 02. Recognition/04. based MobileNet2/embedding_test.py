@@ -1,5 +1,8 @@
 #%%
-import os
+from silence_tensorflow import silence_tensorflow
+silence_tensorflow()
+
+#%%
 from tqdm import tqdm
 import numpy as np
 from tensorflow.keras.preprocessing import image
