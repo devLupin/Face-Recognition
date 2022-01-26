@@ -12,6 +12,6 @@ configurations = {
         TARGET_SIZE=(224, 224),   # height, width
         INPUT_SHAPE=(224, 224, 3),
         
-        THRESHOLD = 0.4,
+        THRESHOLD = 0.004,
     ),
 }
