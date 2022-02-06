@@ -1,63 +1,79 @@
-#%%
-# ignore warnings
-from silence_tensorflow import silence_tensorflow
-silence_tensorflow()
-
-#%%
-from config import configurations
-
-cfg = configurations[1]
-
-TRAIN = cfg['TRAIN_PATH']
-TEST = cfg['TEST_PATH']
-INPUT_SHAPE = cfg['INPUT_SHAPE']
-TARGET_SIZE = cfg['TARGET_SIZE']
-
-THRESHOLD = cfg['THRESHOLD']
-# %%
-from tensorflow.keras.utils import plot_model
-from modules.model import loadModel
-
-model = loadModel(INPUT_SHAPE)
-model.summary()
-plot_model(model, show_shapes=True)
-# %%
-from tensorflow.keras import Model
-face_descriptor = Model(inputs=model.layers[0].input, outputs=model.layers[-1].output)
-
-# %%
-def represent(img_path):
-    """
-    Represents facial images as vectors.
-    
-    Params:
-        img_path = exact image path, numpy array or based64 encoded images could be passed.
-    """
-    # normalization
-    img = functions.preprocess_face(fname=img_path, target_size=TARGET_SIZE)
-    img = functions.normalize_input(img=img)
-    
-    return (face_descriptor.predict(img)[0].tolist())
-# %%
+from absl import app, flags, logging
+from absl.flags import FLAGS
+import cv2
 import os
-import commons.functions as functions
-import commons.distance as dist
 import numpy as np
+import tensorflow as tf
 
-dirs = os.listdir(TRAIN)
-for d in dirs:
-    cur_dir = os.path.join(TRAIN, d)
-    faces = os.listdir(cur_dir)
-    
-    for face in faces:
-        cur_face = os.path.join(cur_dir, face)
-        representation = represent(cur_face)
+from modules.evaluations import get_val_data, perform_val
+from modules.models import ArcFaceModel
+from modules.utils import set_memory_growth, load_yaml, l2_norm
 
-distance = dist.findCosineDistance(source_representation=representation, test_representation=representation)
-distance = np.float64(distance) #causes trobule for euclideans
-print(distance)
-# %%
-if distance <= THRESHOLD:
-	identified = True
-else:
-	identified = False
+
+flags.DEFINE_string('cfg_path', './configs/arc_res50.yaml', 'config file path')
+flags.DEFINE_string('gpu', '0', 'which gpu to use')
+flags.DEFINE_string('img_path', '', 'path to input image')
+
+
+def main(_argv):
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+    os.environ['CUDA_VISIBLE_DEVICES'] = FLAGS.gpu
+
+    logger = tf.get_logger()
+    logger.disabled = True
+    logger.setLevel(logging.FATAL)
+    set_memory_growth()
+
+    cfg = load_yaml(FLAGS.cfg_path)
+
+    model = ArcFaceModel(size=cfg['input_size'],
+                         backbone_type=cfg['backbone_type'],
+                         training=False)
+
+    ckpt_path = tf.train.latest_checkpoint('./checkpoints/' + cfg['sub_name'])
+    if ckpt_path is not None:
+        print("[*] load ckpt from {}".format(ckpt_path))
+        model.load_weights(ckpt_path)
+    else:
+        print("[*] Cannot find ckpt from {}.".format(ckpt_path))
+        exit()
+
+    if FLAGS.img_path:
+        print("[*] Encode {} to ./output_embeds.npy".format(FLAGS.img_path))
+        img = cv2.imread(FLAGS.img_path)
+        img = cv2.resize(img, (cfg['input_size'], cfg['input_size']))
+        img = img.astype(np.float32) / 255.
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        if len(img.shape) == 3:
+            img = np.expand_dims(img, 0)
+        embeds = l2_norm(model(img))
+        np.save('./output_embeds.npy', embeds)
+    else:
+        print("[*] Loading LFW, AgeDB30 and CFP-FP...")
+        lfw, agedb_30, cfp_fp, lfw_issame, agedb_30_issame, cfp_fp_issame = \
+            get_val_data(cfg['test_dataset'])
+
+        print("[*] Perform Evaluation on LFW...")
+        acc_lfw, best_th = perform_val(
+            cfg['embd_shape'], cfg['batch_size'], model, lfw, lfw_issame,
+            is_ccrop=cfg['is_ccrop'])
+        print("    acc {:.4f}, th: {:.2f}".format(acc_lfw, best_th))
+
+        print("[*] Perform Evaluation on AgeDB30...")
+        acc_agedb30, best_th = perform_val(
+            cfg['embd_shape'], cfg['batch_size'], model, agedb_30,
+            agedb_30_issame, is_ccrop=cfg['is_ccrop'])
+        print("    acc {:.4f}, th: {:.2f}".format(acc_agedb30, best_th))
+
+        print("[*] Perform Evaluation on CFP-FP...")
+        acc_cfp_fp, best_th = perform_val(
+            cfg['embd_shape'], cfg['batch_size'], model, cfp_fp, cfp_fp_issame,
+            is_ccrop=cfg['is_ccrop'])
+        print("    acc {:.4f}, th: {:.2f}".format(acc_cfp_fp, best_th))
+
+
+if __name__ == '__main__':
+    try:
+        app.run(main)
+    except SystemExit:
+        pass
