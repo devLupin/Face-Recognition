@@ -2,10 +2,9 @@ from silence_tensorflow import silence_tensorflow
 silence_tensorflow()
 
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-from absl import app, flags, logging
-from absl.flags import FLAGS
+from absl import app, logging
 import tensorflow as tf
 from tensorflow.keras.callbacks import ModelCheckpoint, TensorBoard
 
@@ -13,7 +12,6 @@ from modules.models import ArcFaceModel
 from modules.losses import SoftmaxLoss
 from modules.utils import set_memory_growth, load_yaml, get_ckpt_inf
 import modules.dataset as dataset
-from tensorflow.keras.utils import plot_model
 
 def main(_):
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
@@ -26,14 +24,11 @@ def main(_):
     cfg = load_yaml('./configs/arc_mbv2.yaml')
 
     model = ArcFaceModel(size=cfg['input_size'],
-                         backbone_type=cfg['backbone_type'],
                          num_classes=cfg['num_classes'],
-                         head_type=cfg['head_type'],
                          embd_shape=cfg['embd_shape'],
                          w_decay=cfg['w_decay'],
                          training=True)
     model.summary()
-    plot_model(model, to_file='model.png')
 
 
     logging.info("load K-Face dataset.")
@@ -74,26 +69,14 @@ def main(_):
     tb_callback._samples_seen = steps * cfg['batch_size']
     callbacks = [mc_callback, tb_callback]
     
-    global history
-    history = model.fit(train_dataset,
+    model.fit(train_dataset,
               epochs=cfg['epochs'],
               steps_per_epoch=steps_per_epoch,
               callbacks=callbacks,
               initial_epoch=epochs - 1)
 
     print("[*] training done!")
-    
-    history.history.keys()
 
-    import matplotlib.pyplot as plt
-
-    acc = history.history['accuracy']
-    val_acc = history.history['val_accuracy']
-    loss = history.history['loss']
-    val_loss = history.history['val_loss']
-
-    print(f'acc: {acc}, loss = {loss}')
-    
     model.save('Model')
 
 if __name__ == '__main__':
