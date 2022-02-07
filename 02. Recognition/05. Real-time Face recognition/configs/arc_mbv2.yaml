@@ -2,7 +2,7 @@
 batch_size: 32
 input_size: 224
 embd_shape: 512
-sub_name: 'arc_mbv2'
+sub_name: 'K-Face_arc_mbv2'
 backbone_type: 'MobileNetV2'
 head_type: ArcHead
 is_ccrop: False
@@ -12,10 +12,10 @@ train_dataset: './data/K-Face_bin.tfrecord'
 binary_img: True
 num_classes: 400
 num_samples: 3600
-epochs: 5
+epochs: 50
 base_lr: 0.01
 w_decay: !!float 5e-4
-save_steps: 1000
+save_steps: 560 # 3600 // 32 * 5
 
 # test
 test_dataset: './K-Face/test'
