@@ -44,7 +44,7 @@ class ArcMarginPenaltyLogists(tf.keras.layers.Layer):
         mask = tf.one_hot(tf.cast(labels, tf.int32), depth=self.num_classes,
                           name='one_hot_mask')
 
-        logists = tf.where(mask == 1., cos_mt, cos_t)
-        logists = tf.multiply(logists, self.logist_scale, 'arcface_logist')
+        logits = tf.where(mask == 1., cos_mt, cos_t)
+        logits = tf.multiply(logits, self.logist_scale, 'arcface_logist')
 
-        return logists
+        return logits

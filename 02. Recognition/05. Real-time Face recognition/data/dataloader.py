@@ -20,18 +20,17 @@ def _parse_tfrecord(binary_img=False, is_ccrop=False):
 
         x_train = _transform_images(is_ccrop=is_ccrop)(x_train)
         y_train = _transform_targets(y_train)
-        
         return (x_train, y_train), y_train
     return parse_tfrecord
 
 
 def _transform_images(is_ccrop=False):
     def transform_images(x_train):
-        # x_train = tf.image.resize(x_train, (224, 224))
-        # x_train = tf.image.random_crop(x_train, (224, 224, 3))
-        x_train = tf.image.random_flip_left_right(x_train)  # 이미지를 좌우로 무작위로 뒤짚음.
-        x_train = tf.image.random_saturation(x_train, 0.6, 1.4)     # 이미지 채도 조정
-        x_train = tf.image.random_brightness(x_train, 0.4)      # 밝기 조정
+        x_train = tf.image.resize(x_train, (128, 128))
+        x_train = tf.image.random_crop(x_train, (112, 112, 3))
+        x_train = tf.image.random_flip_left_right(x_train)
+        x_train = tf.image.random_saturation(x_train, 0.6, 1.4)
+        x_train = tf.image.random_brightness(x_train, 0.4)
         x_train = x_train / 255
         return x_train
     return transform_images
@@ -48,8 +47,8 @@ def load_tfrecord_dataset(tfrecord_name, batch_size,
     raw_dataset = tf.data.TFRecordDataset(tfrecord_name)
     raw_dataset = raw_dataset.repeat()
     if shuffle:
-        raw_dataset = raw_dataset.shuffle(buffer_size=buffer_size)  # 데이터 세트의 요소를 무작위로 섞음.
-    dataset = raw_dataset.map(      # Parsing and decoding
+        raw_dataset = raw_dataset.shuffle(buffer_size=buffer_size)
+    dataset = raw_dataset.map(
         _parse_tfrecord(binary_img=binary_img, is_ccrop=is_ccrop),
         num_parallel_calls=tf.data.experimental.AUTOTUNE)
     dataset = dataset.batch(batch_size)

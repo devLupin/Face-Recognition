@@ -1,10 +1,10 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-import modules.dataset as dataset
-from modules.utils import set_memory_growth, load_yaml, get_ckpt_inf
-from modules.losses import SoftmaxLoss
-from modules.models import ArcFaceModel
+import data.dataloader as dataset
+from utils import load_yaml, get_ckpt_inf
+from networks.losses import SoftmaxLoss
+from networks.models import ArcFaceModel
 import tensorflow as tf
 from absl import app, logging
 
@@ -18,12 +18,13 @@ def main(_):
     logger = tf.get_logger()
     logger.disabled = True
     logger.setLevel(logging.FATAL)
-    set_memory_growth()
 
-    cfg = load_yaml('./configs/arc_mbv2.yaml')
+    cfg = load_yaml('./configs/config.yaml')
 
     model = ArcFaceModel(size=cfg['input_size'],
+                         backbone_type=cfg['backbone_type'],
                          num_classes=cfg['num_classes'],
+                         head_type=cfg['head_type'],
                          embd_shape=cfg['embd_shape'],
                          w_decay=cfg['w_decay'],
                          training=True)
@@ -57,7 +58,7 @@ def main(_):
     # training loop
     while epochs <= cfg['epochs']:
         inputs, labels = next(train_dataset)
-
+        
         with tf.GradientTape() as tape:
             logits = model(inputs, training=True)
             reg_loss = tf.reduce_sum(model.losses)
