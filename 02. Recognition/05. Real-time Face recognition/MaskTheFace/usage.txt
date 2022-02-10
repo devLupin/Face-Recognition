@@ -1,0 +1,1 @@
+python mask_the_face.py --path [data_path] --mask_type [all]
