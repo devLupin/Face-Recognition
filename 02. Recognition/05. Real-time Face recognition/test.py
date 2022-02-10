@@ -75,7 +75,7 @@ def main(_argv):
                          training=False,
                          w_decay=cfg['w_decay'])
 
-    ckpt_path = tf.train.latest_checkpoint('./checkpoints/' + cfg['sub_name'])
+    ckpt_path = tf.train.latest_checkpoint('weights/checkpoints/' + cfg['sub_name'])
     if ckpt_path is not None:
         print("[*] load ckpt from {}".format(ckpt_path))
         model.load_weights(ckpt_path)

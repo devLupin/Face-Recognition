@@ -43,7 +43,7 @@ def main(_):
         learning_rate=learning_rate, momentum=0.9, nesterov=True)
     loss_fn = SoftmaxLoss()
 
-    ckpt_path = tf.train.latest_checkpoint('./checkpoints/' + cfg['sub_name'])
+    ckpt_path = tf.train.latest_checkpoint('weights/checkpoints/' + cfg['sub_name'])
     if ckpt_path is not None:
         print("[*] load ckpt from {}".format(ckpt_path))
         model.load_weights(ckpt_path)
@@ -53,7 +53,7 @@ def main(_):
         epochs, steps = 1, 1
 
     train_dataset = iter(train_dataset)
-    summary_writer = tf.summary.create_file_writer("logs/" + cfg['sub_name'])
+    summary_writer = tf.summary.create_file_writer("weights/logs/" + cfg['sub_name'])
 
     # training loop
     while epochs <= cfg['epochs']:
