@@ -1,1 +1,9 @@
+conda create -n MaskTheFace python=3.8
+conda activate MaskTheFace
+
+cd [your MaskTheFace path]
+
+conda install -c conda-forge dlib
+pip install -r requirements.txt
+
 python mask_the_face.py --path [data_path] --mask_type [all]
