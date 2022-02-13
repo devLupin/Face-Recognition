@@ -52,5 +52,5 @@ def main(dataset_path, output_path):
 
 
 if __name__ == "__main__":
-    main("datasets/train", "kface_bin.tfrecord")
-    # main("datasets/masked_train", "masked_bin.tfrecord")
+    main("datasets/train", "kface_bin.tfrecord")    # train data
+    main("datasets/train_masked", "masked_bin.tfrecord")    # masked train data

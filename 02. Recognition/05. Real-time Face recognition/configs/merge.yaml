@@ -2,20 +2,20 @@
 batch_size: 128
 input_size: 112
 embd_shape: 512
-sub_name: 'arc_mbv2_masked' # 'arc_res50_masked', 'arc_mbv2_masked'
+sub_name: 'arc_mbv2_merge' # 'arc_res50_merge', 'arc_mbv2_merge'
 backbone_type: 'MobileNetV2' # 'ResNet50', 'MobileNetV2'
 head_type: ArcHead
 is_ccrop: False # central-cropping or not
 
 # train
-train_dataset: './data/masked_bin.tfrecord'
+train_dataset: './data/merge_bin.tfrecord'
 binary_img: True
 num_classes: 400
-num_samples: 45018
+num_samples: 52618
 epochs: 50
 base_lr: 0.0001
 w_decay: !!float 5e-4
-save_steps: 3510 # 45018 // 128 * 10
+save_steps: 4110 # 52618 // 128 * 10
 
 # test
-test_dataset: 'data/kface_test_masked_npy'
+test_dataset: 'data/kface_test_merge_npy'

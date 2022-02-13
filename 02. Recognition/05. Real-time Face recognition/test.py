@@ -68,6 +68,7 @@ def main(_argv):
     logger.setLevel(logging.FATAL)
 
     cfg = load_yaml('./configs/config.yaml')
+    # cfg = load_yaml('./configs/masked.yaml')
     test_path = cfg['test_dataset']
 
     model = ArcFaceModel(size=cfg['input_size'],

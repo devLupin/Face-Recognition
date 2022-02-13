@@ -19,7 +19,8 @@ def main(_):
     logger.disabled = True
     logger.setLevel(logging.FATAL)
 
-    cfg = load_yaml('./configs/config.yaml')
+    # cfg = load_yaml('./configs/config.yaml')
+    cfg = load_yaml('./configs/masked.yaml')
 
     model = ArcFaceModel(size=cfg['input_size'],
                          backbone_type=cfg['backbone_type'],
@@ -85,10 +86,10 @@ def main(_):
                     'loss/reg loss', reg_loss, step=steps)
                 tf.summary.scalar(
                     'learning rate', optimizer.lr, step=steps)
-
+ 
         if steps % cfg['save_steps'] == 0:
             print('[*] save ckpt file!')
-            model.save_weights('checkpoints/{}/e_{}_b_{}.ckpt'.format(
+            model.save_weights('weights/checkpoints/{}/e_{}_b_{}.ckpt'.format(
                 cfg['sub_name'], epochs, steps % steps_per_epoch))
 
         steps += 1
