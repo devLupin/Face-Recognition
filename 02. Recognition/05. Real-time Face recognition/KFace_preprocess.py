@@ -22,36 +22,42 @@ def make_pair_numpy(path=None, save_path=None, num_classes=None):
             classes = os.listdir(path)
             ref_class = np.random.choice(classes)
             num_imgs = len(os.listdir(os.path.join(path, ref_class)))
+            if num_imgs==0:
+                continue
             ref_number = np.random.randint(num_imgs)
             
             imgs = os.listdir(os.path.join(path, ref_class))
             cur_ref_img = imgs[ref_number]
             
             ref_name = os.path.join(path, ref_class, cur_ref_img)
-            f.write(f"{ref_class}/{os.path.basename(ref_name)}, ")
-            ref_imgs.append(np.array(Image.open(ref_name), dtype=np.uint8))
 
             is_pair = np.random.randint(2)
             
             if is_pair:
-                is_same.append(1)
                 query_class = ref_class
                 num_query_imgs = num_imgs
+                if num_query_imgs==0:
+                    continue
                 query_number = np.random.randint(num_query_imgs)
                 cur_query_img = imgs[query_number]
                 query_name = os.path.join(path, query_class, cur_query_img)
             else:
-                is_same.append(0)
                 classes.remove(ref_class)
                 query_class = np.random.choice(classes)
                 imgs = os.listdir(os.path.join(path, query_class))
                 num_query_imgs = len(os.listdir(os.path.join(path, query_class)))
+                if num_query_imgs==0:
+                    continue
                 query_number = np.random.randint(num_query_imgs)
                 cur_query_img = imgs[query_number]
                 query_name = os.path.join(path, query_class, cur_query_img)
 
+            f.write(f"{ref_class}/{os.path.basename(ref_name)}, ")
             f.write(f"{query_class}/{os.path.basename(query_name)}, {is_pair}\n")
+            
+            ref_imgs.append(np.array(Image.open(ref_name), dtype=np.uint8))
             query_imgs.append(np.array(Image.open(query_name), dtype=np.uint8))
+            is_same.append(is_pair)
 
     ref_imgs = np.array(ref_imgs, dtype=np.uint8)
     query_imgs = np.array(query_imgs, dtype=np.uint8)
@@ -107,60 +113,14 @@ def make_pair_numpy_benchmark():
         np.save('benchmark_npy/queries.npy', query_imgs)
         np.save('benchmark_npy/is_same.npy', is_same)
 
-def make_pair_custom(img_path, dataset_name):
-    save_path = 'data/'+ dataset_name + '_npy'
-    if not os.path.exists(save_path):
-            os.makedirs(save_path)
-    
-    ref_imgs = []
-    query_imgs = []
-    is_same = []
-
-    classes = os.listdir(img_path)
-
-    with open(save_path + '/references.csv', 'w', encoding='utf-8') as f:
-        f.write("references, queries, is_same\n")
-        
-        for i in range(len(classes)):
-            for j in range(len(classes)):
-                
-                cur_ref_path = os.path.join(img_path, classes[i])
-                cur_query_path = os.path.join(img_path, classes[j])
-                
-                ref = os.listdir(cur_ref_path)
-                query = os.listdir(cur_query_path)
-                
-                for r in tqdm(ref):
-                    for q in query:
-                        if i==j and r==q:
-                            continue
-                        
-                        f.write(f'{i}/{os.path.basename(r)}, {j}/{os.path.basename(q)}, ')
-                        ref_imgs.append(np.array(Image.open(os.path.join(cur_ref_path, r))))
-                        query_imgs.append(np.array(Image.open(os.path.join(cur_query_path, q))))
-                        
-                        if i==j:
-                            is_pair=1
-                        else:
-                            is_pair=0
-                            
-                        f.write(f'{is_pair} \n')
-                        is_same.append(is_pair)
-
-        ref_imgs = np.array(ref_imgs, dtype=np.uint8)
-        query_imgs = np.array(query_imgs, dtype=np.uint8)
-        is_same = np.array(is_same, dtype=np.uint8)
-
-        np.save(save_path + '/references.npy', ref_imgs)
-        np.save(save_path + '/queries.npy', query_imgs)
-        np.save(save_path + '/is_same.npy', is_same)
-
 
 def main():
     # make_pair_numpy('data/datasets/val', 'data/kface_test_npy/', 400)
+    # make_pair_numpy('data/datasets/val_masked', 'data/kface_test_masked_npy/', 400)
+    make_pair_numpy('data/datasets/lfw_masked', 'data/lfw_masked_test_npy/', 5749)
+    # make_pair_numpy('data/datasets/val_2n', 'data/kface_test_2n_npy/', 800)
+    
     # make_pair_numpy_benchmark()
-    make_pair_custom('data/datasets/sclab_masked', 'sclab_masked')
-    # make_pair_numpy('data/datasets/sclab_masked', 'data/scalb_masked_test_npy/', 6)
 
 
 if __name__ == "__main__":
