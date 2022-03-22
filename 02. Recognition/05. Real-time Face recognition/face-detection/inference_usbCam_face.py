@@ -3,7 +3,7 @@
 # pylint: disable=C0103
 # pylint: disable=E1101
 
-import os
+import os, errno
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 from utils import visualization_utils_color as vis_util
@@ -86,6 +86,7 @@ class TensoflowFaceDector(object):
 
 
 if __name__ == "__main__":
+    temp_png = '../temp.PNG'    # Save to ArcFace path
     tDetector = TensoflowFaceDector(PATH_TO_CKPT)
 
     cap = cv2.VideoCapture(0)
@@ -99,7 +100,6 @@ if __name__ == "__main__":
             break
 
         [h, w] = image.shape[:2]
-        # print (h, w)
         image = cv2.flip(image, 1)  # 좌우 반전
 
         (boxes, scores, classes, num_detections) = tDetector.run(image)
@@ -110,20 +110,18 @@ if __name__ == "__main__":
         if (score[0] > 0.90):   # if detect face
             ymin, xmin, ymax, xmax = box[0]
 
-            """
-            RGB 변환 안 먹힘
-            """
-            pil_image = Image.fromarray(np.uint8(image)).convert('RGB')
-            im_width, im_height = pil_image.size
+            # pil_image = Image.fromarray(np.uint8(image)).convert('RGB')
+            temp = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            pil_image = Image.fromarray(temp)
 
-            pil_image.show()
 
-            (left, right, top, bottom) = (xmin * im_width, xmax * im_width,
-                                          ymin * im_height, ymax * im_height)
+            (left, right, top, bottom) = (xmin * w, xmax * w,
+                                          ymin * h, ymax * h)
 
             cropped = pil_image.crop((left, top, right, bottom))
             cropped = cropped.resize((112, 112), Image.ANTIALIAS)
-            cropped.save('C:\\Users\\Hyuntaek\\Desktop\\temp.jpg', format='PNG', quality=100)
+            # cropped.show()
+            cropped.save(temp_png, format='PNG', quality=100)
 
 
 
@@ -135,6 +133,13 @@ if __name__ == "__main__":
                 category_index,
                 use_normalized_coordinates=True,
                 line_thickness=4)
+
+        else:   # not detect face
+            try:
+                os.remove(temp_png)
+            except OSError as e:
+                if e.errno != errno.ENOENT:
+                    raise
 
         if windowNotSet is True:
             cv2.namedWindow("tensorflow based (%d, %d)" %
