@@ -1,0 +1,8 @@
+.vscode/*
+**/checkpoints/*
+**/logs/*
+**/__pycache__/*
+**/*.tfrecord
+**/data/datasets/*
+**/data/test_npy/*
+**/data/tfrecord/*
